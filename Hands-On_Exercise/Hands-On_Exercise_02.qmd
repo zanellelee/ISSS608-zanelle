@@ -1,0 +1,54 @@
+---
+title: "Hands-On Exercise 02 (Beyond ggplot2 Fundamentals)"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+```{r}
+pacman::p_load(ggrepel, patchwork, ggthemes, hrbrthemes, tidyverse)
+
+#loading data into exam_data
+exam_data <- read_csv("C:/Users/Zanelle/Downloads/ISSS608 Visual Analytics/Data files/Exam_data.csv")
+
+#ggrepel
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label(aes(label = ID), 
+             hjust = .5, 
+             vjust = -.5) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+
+#replacing geom_label() by geom_label_repel() [and geom_text() with geom_text_repel()]
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label_repel(aes(label = ID), 
+                   fontface = "bold") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+
+#ggplot2 themes
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  theme_gray() +
+  ggtitle("Distribution of Maths scores") 
+```

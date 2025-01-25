@@ -1,0 +1,10 @@
+---
+title: "Hands-On Exercise 00"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---

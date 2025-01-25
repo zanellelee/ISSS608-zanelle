@@ -1,0 +1,30 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"ISSS608 Zanelle's enclosed space\"\n",
+        "---\n",
+        "\n",
+        "\n",
+        "![](images/clipboard-1926453458.png)\n",
+        "\n",
+        "\n",
+        "```{Welcome to this little safe space!}\n",
+        "```"
+      ],
+      "id": "48cd345c"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

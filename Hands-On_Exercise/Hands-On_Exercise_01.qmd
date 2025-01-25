@@ -1,0 +1,197 @@
+---
+title: "Hands-On Exercise 01 (A Layered Grammer of Graphics: ggplot2 methods)"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+```{r}
+pacman::p_load(tidyverse)
+
+#loading data into exam_data
+exam_data <- read_csv("C:/Users/Zanelle/Downloads/ISSS608 Visual Analytics/Data files/Exam_data.csv")
+
+#plot using R graphics
+hist(exam_data$MATHS)
+
+#plot using ggplot2
+ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="grey") +
+  ggtitle("Distribution of Maths scores")
+```
+
+```{r}
+#bar chart
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar()
+
+#dot plot
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot(dotsize = 0.5)
+
+#scale_y_continuous turns off y-axis, binwidth changes bins' width
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot(binwidth=2.5,         
+               dotsize = 0.5) +      
+  scale_y_continuous(NULL,           
+                     breaks = NULL)
+```
+
+```{r}
+#simple histogram, default bin is 30
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_histogram()
+
+#bins = no. of bins, fill = colour histogram is shadedm colour = outline colour of bars
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20,            
+                 color="black",      
+                 fill="light blue")
+
+#changing interior colour of histogram using fill under aes()
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           fill = GENDER)) +
+  geom_histogram(bins=20, 
+                 color="grey30")
+```
+
+```{r}
+#geom_density plots kernal density estimate (smoothed version of histogram)
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_density()
+
+#plotting 2 kernal density lines using colour (can also use fill under aes())
+ggplot(data=exam_data, 
+       aes(x = MATHS, 
+           colour = GENDER)) +
+  geom_density()
+```
+
+```{r}
+#geom_boxplot() for continuous value list
+ggplot(data=exam_data, 
+       aes(y = MATHS,       
+           x= GENDER)) +    
+  geom_boxplot()
+
+#notches to assess if medians of distributions differ
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_boxplot(notch=TRUE)
+
+#geom_violin() for comparing multiple data distributions
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_violin()
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point()
+
+#combining geom objects (geom_boxplot() and geom_point())
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_boxplot() +                    
+  geom_point(position="jitter", 
+             size = 0.5)
+```
+
+```{r}
+#using stat_summary()
+ggplot(data=exam_data, 
+       aes(y = MATHS, x= GENDER)) +
+  geom_boxplot() +
+  stat_summary(geom = "point",       
+               fun = "mean",         
+               colour ="red",        
+               size=4)
+
+#using geom_point()
+ggplot(data=exam_data, 
+       aes(y = MATHS, x= GENDER)) +
+  geom_boxplot() +
+  geom_point(stat="summary",        
+             fun="mean",           
+             colour="red",          
+             size=4)
+```
+
+```{r}
+#best fit curve on scatterplot
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(size=0.5)
+
+#override default smoothing method
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              linewidth=0.5)
+```
+
+```{r}
+#trellis plot using facet_wrap()
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20) +
+    facet_wrap(~ CLASS)
+
+#trellis plot using facet_grid()
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20) +
+    facet_grid(~ CLASS)
+```
+
+```{r}
+#flipped axis
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip()
+
+#fixing axis range
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+
+#using themes
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_classic()
+
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_minimal()
+```

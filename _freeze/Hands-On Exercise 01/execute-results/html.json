@@ -1,0 +1,17 @@
+{
+  "hash": "7a0f77ecd4b35afa81daaadace6047bc",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Hands-On Exercise 01 (A Layered Grammer of Graphics: ggplot2 methods)\"\nauthor: \"Zanelle Lee Wenfang\"\ndate-modified: \"last-modified\"\nexecute:\n    echo: true\n    eval: true\n    warning: false\n    freeze: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(tidyverse)\nexam_data <- read_csv(\"C:\\\\zanellelee\\\\ISSS608-zanelle\\\\Exam_data.csv\")\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram(bins=10, \n                 boundary = 100,\n                 color=\"black\", \n                 fill=\"grey\") +\n  ggtitle(\"Distribution of Maths scores\")\n```\n\n::: {.cell-output-display}\n![](Hands-On-Exercise-01_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "Hands-On-Exercise-01_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
