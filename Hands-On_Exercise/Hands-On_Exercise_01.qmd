@@ -1,5 +1,5 @@
 ---
-title: "Hands-On Exercise 01 (A Layered Grammer of Graphics: ggplot2 methods)"
+title: "Hands-On Exercise 1 (A Layered Grammer of Graphics: ggplot2 methods)"
 author: "Zanelle Lee Wenfang"
 date-modified: "last-modified"
 execute:
@@ -167,7 +167,7 @@ ggplot(data=exam_data,
 ```
 
 ```{r}
-#flipped axis
+#flipped axis, by default it will be vertical
 ggplot(data=exam_data, 
        aes(x=RACE)) +
   geom_bar() +
@@ -182,13 +182,22 @@ ggplot(data=exam_data,
   coord_cartesian(xlim=c(0,100),
                   ylim=c(0,100))
 
-#using themes
+#using themes -
+#horizonal and grey theme
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_gray()
+
+#horizontal and classic theme
 ggplot(data=exam_data, 
        aes(x=RACE)) +
   geom_bar() +
   coord_flip() +
   theme_classic()
 
+#horizontal and minimal theme
 ggplot(data=exam_data, 
        aes(x=RACE)) +
   geom_bar() +

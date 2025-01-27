@@ -4,27 +4,37 @@ project:
 website:
   title: "ISSS608 Zanelle's enclosed space"
   navbar:
-    left:
+    right:
     - href: index.qmd
       text: Home
     - href: about.qmd
       text: About
+    
+    left:
     - text: "Hands-On Exercise"
       menu:
       - href: "Hands-On_Exercise/Hands-On_Exercise_00.html"
-        text: "Hands-On Exercise 00"
+        text: "Hands-On Exercise 0"
       - href: "Hands-On_Exercise/Hands-On_Exercise_01.html"
-        text: "Hands-On Exercise 01"
+        text: "Hands-On Exercise 1"
       - href: "Hands-On_Exercise/Hands-On_Exercise_02.html"
-        text: "Hands-On Exercise 02"
+        text: "Hands-On Exercise 2"
+        
+    - text: "In-Class Exercise"
+      menu:
+      - href: https://public.tableau.com/views/In-Class_Ex01_17371865795720/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+        text: "In-Class Exercise 1"
+      - href: https://public.tableau.com/views/In-Class_Ex02_17377898450610/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+        text: "In-Class Exercise 2"
     
-
+    - text: "Take-Home Exercise"
+      menu:
+        - text: "Take-Home Exercise 1"
 
 format:
   html:
     theme:
-      - cosmo
-      - brand
+      - journal
     css: styles.css
     toc: true
 
