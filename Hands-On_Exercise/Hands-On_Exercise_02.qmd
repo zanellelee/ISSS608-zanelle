@@ -13,7 +13,7 @@ execute:
 pacman::p_load(ggrepel, patchwork, ggthemes, hrbrthemes, tidyverse)
 
 #loading data into exam_data
-exam_data <- read_csv("C:/Users/Zanelle/Downloads/ISSS608 Visual Analytics/Data files/Exam_data.csv")
+exam_data <- read_csv("Data files/Exam_data.csv")
 
 #ggrepel
 ggplot(data=exam_data, 
@@ -83,9 +83,7 @@ ggplot(data=exam_data,
   theme_ipsum(axis_title_size = 18,
               base_size = 15,
               grid = "Y")
-```
 
-```{r}
 #plot 1 (histogram Math scores)
 p1 <- ggplot(data=exam_data, 
              aes(x = MATHS)) +

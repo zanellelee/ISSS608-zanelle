@@ -13,7 +13,7 @@ execute:
 pacman::p_load(tidyverse)
 
 #loading data into exam_data
-exam_data <- read_csv("C:/Users/Zanelle/Downloads/ISSS608 Visual Analytics/Data files/Exam_data.csv")
+exam_data <- read_csv("Data files/Exam_data.csv")
 
 #plot using R graphics
 hist(exam_data$MATHS)
