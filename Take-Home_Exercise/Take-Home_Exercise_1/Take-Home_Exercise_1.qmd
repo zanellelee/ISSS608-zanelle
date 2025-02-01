@@ -1,0 +1,11 @@
+---
+title: "Take Home Exercise 1"
+author: "Zanelle Lee Wenfang"
+date: "February 1, 2025"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---

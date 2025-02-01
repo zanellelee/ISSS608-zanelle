@@ -13,12 +13,10 @@ website:
     left:
     - text: "Hands-On Exercise"
       menu:
-      - href: "Hands-On_Exercise/Hands-On_Exercise_00.html"
-        text: "Hands-On Exercise 0"
       - href: "Hands-On_Exercise/Hands-On_Exercise_01.html"
-        text: "Hands-On Exercise 1"
+        text: "1. A Layered Grammer of Graphics: ggplot2 method"
       - href: "Hands-On_Exercise/Hands-On_Exercise_02.html"
-        text: "Hands-On Exercise 2"
+        text: "2. Beyond ggplot2 Fundamentals"
       - href: "Hands-On_Exercise/Hands-On_Exercise_03.html"
         text: "Hands-On Exercise 3"
         
@@ -31,7 +29,8 @@ website:
     
     - text: "Take-Home Exercise"
       menu:
-        - text: "Take-Home Exercise 1"
+        - href: "Take-Home_Exercise/Take-Home_Exercise_1.html"
+          text: "Take-Home Exercise 1"
 
 format:
   html:
