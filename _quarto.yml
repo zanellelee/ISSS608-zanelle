@@ -17,8 +17,10 @@ website:
         text: "1. A Layered Grammer of Graphics: ggplot2 method"
       - href: "Hands-On_Exercise/Hands-On_Exercise_02.html"
         text: "2. Beyond ggplot2 Fundamentals"
-      - href: "Hands-On_Exercise/Hands-On_Exercise_03.html"
-        text: "Hands-On Exercise 3"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_03a.html"
+        text: "3a. Programming Interactive Data Visualisation with R"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_03b.html"
+        text: "3b. Programming Animated Statistical Graphics with R"
         
     - text: "In-Class Exercise"
       menu:
