@@ -21,6 +21,9 @@ website:
         text: "3a. Programming Interactive Data Visualisation with R"
       - href: "Hands-On_Exercise/Hands-On_Exercise_03b.html"
         text: "3b. Programming Animated Statistical Graphics with R"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_04a.html"
+        text: "4a. Visualising Distribution"
+        
         
     - text: "In-Class Exercise"
       menu:
