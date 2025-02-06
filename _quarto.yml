@@ -23,6 +23,8 @@ website:
         text: "3b. Programming Animated Statistical Graphics with R"
       - href: "Hands-On_Exercise/Hands-On_Exercise_04a.html"
         text: "4a. Visualising Distribution"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_04b.html"
+        text: "4b. Visual Statistical Analysis"
         
         
     - text: "In-Class Exercise"
