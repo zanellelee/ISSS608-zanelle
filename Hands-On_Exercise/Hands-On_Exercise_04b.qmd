@@ -1,0 +1,104 @@
+---
+title: "Hands-On Exercise 4b (Visual Statistical Analysis)"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+```{r}
+pacman::p_load(ggstatsplot, tidyverse)
+exam <- read_csv("Data files/Exam_data.csv")
+
+#using gghistostats()
+set.seed(1234)
+
+gghistostats(
+  data = exam,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+
+#using ggbetweenstats 
+#>> two-sample mean test of Math scores by gender
+ggbetweenstats(
+  data = exam,
+  x = GENDER, 
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+
+#>> one-way ANOVA test on English score by race
+ggbetweenstats(
+  data = exam,
+  x = RACE, 
+  y = ENGLISH,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+  
+#using ggscatterstats() 
+#>> Significant Test of Correlation between Math and English scores
+ggscatterstats(
+  data = exam,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = FALSE,
+  )
+
+#Math scores binned into a 4-class variable using cut()
+exam1 <- exam %>% 
+  mutate(MATHS_bins = 
+           cut(MATHS, 
+               breaks = c(0,60,75,85,100))
+)
+
+#using ggbarstats()
+#>> Significant Test of Association
+ggbarstats(exam1, 
+           x = MATHS_bins, 
+           y = GENDER)
+
+
+pacman::p_load(readxl, performance, parameters, see)
+car_resale <- read_xls("Data Files/ToyotaCorolla.xls", 
+                       "data")
+car_resale
+
+#calibrate multiple linear regression model using lm() of Base Stats of R
+model <- lm(Price ~ Age_08_04 + Mfg_Year + KM + 
+              Weight + Guarantee_Period, data = car_resale)
+model
+
+#check collinearity of performance package
+check_collinearity(model)
+check_c <- check_collinearity(model)
+plot(check_c)
+
+#check normality of performance package
+model1 <- lm(Price ~ Age_08_04 + KM + 
+              Weight + Guarantee_Period, data = car_resale)
+check_n <- check_normality(model1)
+plot(check_n)
+
+#check heteroscedasticity of performance package
+check_h <- check_heteroscedasticity(model1)
+plot(check_h)
+
+#can also perform complete using check_model()
+check_model(model1)
+
+#visualise parameters of regression model using ggcoefstats() of ggstatsplot
+ggcoefstats(model1, 
+            output = "plot")
+```
