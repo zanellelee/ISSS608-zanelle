@@ -160,9 +160,7 @@ exam %>%
     subtitle = "Gradient + interval plot")
 
 #install ungeviz package and launching application in R
-devtools::install_github("wilkelab/ungeviz")
-
-library(ungeviz)
+library(ungeviz) #devtools::install_github("wilkelab/ungeviz")
 
 #building Hypothetical Outcome Plots (HOPs)
 ggplot(data = exam, 
