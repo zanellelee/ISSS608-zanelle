@@ -25,6 +25,10 @@ website:
         text: "4a. Visualising Distribution"
       - href: "Hands-On_Exercise/Hands-On_Exercise_04b.html"
         text: "4b. Visual Statistical Analysis"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_04c.html"
+        text: "4c. Visualising Uncertainty"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_04d.html"
+        text: "4d. Funnel Plots for Fair Comparisons"
         
         
     - text: "In-Class Exercise"
