@@ -34,9 +34,15 @@ website:
     - text: "In-Class Exercise"
       menu:
       - href: https://public.tableau.com/views/In-Class_Ex01_17371865795720/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
-        text: "In-Class Exercise 1"
+        text: "1. Sales and Profit Report"
       - href: https://public.tableau.com/views/In-Class_Ex02_17377898450610/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
-        text: "In-Class Exercise 2"
+        text: "2. Interactive Sales and Profit Report"
+      - href: https://public.tableau.com/views/In-Class_Ex03_17383926680820/InteractiveDashboard?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+        text: "3a. Sales vs Profit by State (Year Filter)"
+      - href: https://public.tableau.com/views/In-Class_Ex03-1/SalesvsProfitbyMonthandYear?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+        text: "3b. Sales vs Profit by Month and Year"
+      - href: https://public.tableau.com/views/In-Class_Ex03Story_17383932478800/Story1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+        text: "3c. Sales vs Profit Story"
     
     - text: "Take-Home Exercise"
       menu:
