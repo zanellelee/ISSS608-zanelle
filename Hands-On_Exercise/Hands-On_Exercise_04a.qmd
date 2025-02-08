@@ -23,14 +23,16 @@ ggplot(exam,
     scale = 3,
     rel_min_height = 0.01,
     bandwidth = 3.4,
-    fill = lighten("#7097BB", .3),
-    color = "white"
+    fill = lighten("#7097BB", .3), #7097BB blue is fill colour
+    color = "white" #outline colour
   ) +
   scale_x_continuous(
-    name = "English grades",
+    name = "English grades", #labelling the x axis
     expand = c(0, 0)
     ) +
   scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  #did not name the y-axis
+  #expanision of 0.2 and 2.6 to adjust the height and placement of ridges
   theme_ridges()
 
 #varying fill colours along x-axis using geom_density_ridges_gradient()
