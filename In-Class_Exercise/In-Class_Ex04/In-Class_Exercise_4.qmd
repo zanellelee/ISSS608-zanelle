@@ -1,0 +1,31 @@
+---
+title: "In-Class Exercise 4"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+### **Installing and loading the packages**
+
+```{r}
+pacman::p_load(haven, SmartEDA, tidyverse, tidymodels)
+```
+
+### **Data import**
+
+```{r}
+exam_data <- read.csv("Exam_data.csv")
+```
+
+### Plotting boxplot
+
+```{r}
+ggplot(data = exam_data,
+       aes(x = ENGLISH,
+           y = CLASS)) +
+  geom_boxplot()
+```
