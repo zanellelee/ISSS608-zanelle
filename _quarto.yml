@@ -43,7 +43,7 @@ website:
         text: "3b. Sales vs Profit by Month and Year"
       - href: https://public.tableau.com/views/In-Class_Ex03Story_17383932478800/Story1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
         text: "3c. Sales vs Profit Story"
-      - href: "In-class exercise/In-Class_Ex04/In-Class_Exercise_4.html"
+      - href: "C:/Users/Zanelle/Downloads/ISSS608 Visual Analytics/In-class exercise/In-Class_Ex04/In-Class_Exercise_4.qmd"
         text: "4. Boxplot"
     
     - text: "Take-Home Exercise"
