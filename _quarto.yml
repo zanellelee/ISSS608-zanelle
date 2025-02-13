@@ -33,6 +33,9 @@ website:
         text: "5b. Visual Correlation Analysis"
       - href: "Hands-On_Exercise/Hands-On_Exercise_05c.html"
         text: "5c. Heatmap for Visualising and Analysing Multivariate Data"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_05d.html"
+        text: "5d. Visual Multivariate Analysis with Parallel Coordinates Plot"
+      
         
         
     - text: "In-Class Exercise"

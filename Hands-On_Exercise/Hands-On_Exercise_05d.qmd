@@ -1,0 +1,100 @@
+---
+title: "Hands-On Exercise 5d (Visual Multivariate Analysis with Parallel Coordinates Plot)"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+### Installing R packages
+
+```{r}
+pacman::p_load(GGally, parallelPlot, tidyverse)
+```
+
+### Importing data
+
+```{r}
+wh <- read_csv("Data files/WHData-2018.csv")
+```
+
+### Plotting Static Parallel Coordinates Plot
+
+```{r}
+ggparcoord(data = wh, 
+           columns = c(7:12))
+
+#with boxplot
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Parallel Coordinates Plot of World Happines Variables")
+
+#with facet
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region)
+```
+
+### x-axis text label
+
+```{r}
+#rotating label
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region) + 
+  theme(axis.text.x = element_text(angle = 30))
+
+#adjusting rotated label
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region) + 
+  theme(axis.text.x = element_text(angle = 30, hjust=1))
+```
+
+### Plotting interactive Parallel Coordinates Plot
+
+```{r}
+#basic plot
+wh <- wh %>%
+  select("Happiness score", c(7:12))
+parallelPlot(wh,
+             width = 320,
+             height = 250)
+
+#rotate axis label
+parallelPlot(wh,
+             rotateTitle = TRUE)
+
+#changing colour scheme
+parallelPlot(wh,
+             continuousCS = "YlOrRd",
+             rotateTitle = TRUE)
+
+#plot histogram along axis
+histoVisibility <- rep(TRUE, ncol(wh))
+parallelPlot(wh,
+             rotateTitle = TRUE,
+             histoVisibility = histoVisibility)
+```
