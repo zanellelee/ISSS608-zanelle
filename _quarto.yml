@@ -35,6 +35,8 @@ website:
         text: "5c. Heatmap for Visualising and Analysing Multivariate Data"
       - href: "Hands-On_Exercise/Hands-On_Exercise_05d.html"
         text: "5d. Visual Multivariate Analysis with Parallel Coordinates Plot"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_05e.html"
+        text: "5e. Treemap Visualisation with R"
       
         
         
