@@ -31,6 +31,8 @@ website:
         text: "4d. Funnel Plots for Fair Comparisons"
       - href: "Hands-On_Exercise/Hands-On_Exercise_05b.html"
         text: "5b. Visual Correlation Analysis"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_05c.html"
+        text: "5c. Heatmap for Visualising and Analysing Multivariate Data"
         
         
     - text: "In-Class Exercise"
