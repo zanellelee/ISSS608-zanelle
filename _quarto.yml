@@ -29,6 +29,8 @@ website:
         text: "4c. Visualising Uncertainty"
       - href: "Hands-On_Exercise/Hands-On_Exercise_04d.html"
         text: "4d. Funnel Plots for Fair Comparisons"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_05a.html"
+        text: "5a. Creating Ternary Plot with R"
       - href: "Hands-On_Exercise/Hands-On_Exercise_05b.html"
         text: "5b. Visual Correlation Analysis"
       - href: "Hands-On_Exercise/Hands-On_Exercise_05c.html"

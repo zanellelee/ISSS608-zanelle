@@ -36,9 +36,7 @@ Ternary plots are a way of displaying the distribution and variability of a thre
 ### Installing R packages
 
 ```{r}
-install.packages("ggtern", repos = "https://cran.rstudio.com/")
-library(ggtern)
-pacman::p_load(corrplot, ggstatsplot, tidyverse)
+pacman::p_load(plotly, ggtern, tidyverse)
 ```
 
 ### Importing data
