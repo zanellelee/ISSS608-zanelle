@@ -1,0 +1,155 @@
+---
+title: "In-Class Exercise 5a (Building a regression model)"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+### Getting Started
+
+```{r}
+pacman::p_load(tidyverse, readxl, SmartEDA, easystats, gtsummary)
+```
+
+::: callout-note
+Remember to clear cache and install packages that are new so that they can be updated. If the cache is not cleared, installing the newer version will not automatically overwrite the old Also, run this chunk of data first so that the libraries of the most updated version will be used.
+:::
+
+### Importing data
+
+```{r}
+car_resale <- read_xls("ToyotaCorolla.xls", "data")
+```
+
+```{r}
+glimpse(car_resale)
+```
+
+```{r}
+summary(car_resale)
+```
+
+```{r}
+list(car_resale)
+```
+
+### Data Overview
+
+```{r}
+car_resale %>%
+  ExpData(type=1)
+```
+
+```{r}
+summary_car_resale <- car_resale %>% 
+  ExpData(type=1)
+```
+
+There are no missing data, therefore "% of variables having complete cases" is 100% and the next 3 lines are all zeroes. If there is missing data, these lines will display further details.
+
+::: callout-note
+Saving the data table into variable *summary_car_resale*.
+:::
+
+```{r}
+car_resale %>%
+  ExpData(type=2)
+```
+
+### Making variables into vectors
+
+```{r}
+cols <- c("Mfg_Month", "HP_Bin", "CC_bin", "Doors", "Gears", "Cylinders", "Fuel_Type", "Color", "Met_Color", "Automatic", "Mfr_Guarantee", "BOVAG_Guarantee", "ABS", "Airbag_1", "Airbag_2", "Airco", "Automatic_airco", "Boardcomputer", "CD_Player", "Central_Lock", "Powered_Windows", "Power_Steering", "Radio", "Mistlamps", "Sport_Model", "Backseat_Divider", "Metallic_Rim", "Radio_cassette", "Tow_Bar")
+
+car_resale <- read_xls("ToyotaCorolla.xls", sheet="data") %>%
+  mutate(Id = as.character(Id)) %>%
+  mutate_each_(funs(factor(.)),cols)
+```
+
+**mutate()** function allows us to do data transformation. The first line converts ID into character, while the second line is a function that converts all in cols into factors. Use *dpylr* and *tidyr* packages for useful data transformations.
+
+### ExpNumViz
+
+```{r}
+car_resale %>%
+  ExpNumViz(target=NULL,
+            nlim=10,
+            Page=c(2,2))
+
+car_resale %>%
+  ExpNumViz(target="Price",
+            nlim=10,
+            Page=c(2,2))
+```
+
+ExpNumViz will provide a report of 4 graphs. It is actually using ggplot2 and providing probability density plots of all the 5 categorical data, rather than using ggplot2 to manually plot the graphs and combining them using patchwork. The page is 2 by 2, giving 4 plots on the first page and 1 plot on the second page. [*nlim*](#0) sets the maximum unique values for numeric variable.
+
+```{r}
+# Bar plots for all categorical variables
+#| fig-width: 12
+#| fig-height: 10
+car_resale %>%
+  ExpCatViz(target=NULL,
+            col="sky blue",
+            clim=10,
+            margin=2,
+            Page=c(4,4),
+            sample=16)
+```
+
+They are plotted as bar charts and not histograms as the numbers are categorical variables.
+
+### Checking model
+
+::: callout-note
+Use *performance* package to check the model created.
+:::
+
+```{r}
+model <- lm(Price ~ Age_08_04 + Mfg_Year + KM + Weight + Guarantee_Period, data = car_resale)
+model
+```
+
+*lm* stands for least squares method.
+
+```{r}
+check_collinearity(model)
+```
+
+```{r}
+check_c <- check_collinearity(model)
+plot(check_c)
+```
+
+*plot* will plot according to the output that you have and create a suitable plot (bar plot in this case). There are 3 stacked divisions:
+
+**\<5** - no risk of collinearity
+
+**5-10** - signs of collinearity, but nothing too adverse, just a little concern
+
+**\>10** - might be problematic, have to be careful, might show signs of multicollinearity
+
+```{r}
+model1 <- lm(Price ~ Age_08_04 + KM + Weight + Guarantee_Period, data = car_resale)
+
+check_normality(model1)
+```
+
+Removing *Mfg_Year* due to high collinearity. Check for normality (one of the diagnostic checks) - normality assumption test usually using p-value.
+
+```{r}
+summary(model1)
+```
+
+```{r}
+tbl_regression(model1, intercept = TRUE) %>%
+  add_glance_source_note(
+    label = list(sigma ~ "\U03C3"),
+    include = c(r.squared, adj.r.squared, AIC, statistic, p.value, sigma))
+```
+
+*summary()* and *tbl_regression()* gives the same output except the latter nicely packs output data into a table form. [Greek letters](https://forum.juce.com/t/how-to-display-greek-characters-in-labels-of-gui/43967) can also be inserted to display the symbol needed. *include()* forces it to calculate the variables that is desired and is reflected in a line after the output table.
