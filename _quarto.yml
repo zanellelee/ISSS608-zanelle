@@ -57,7 +57,7 @@ website:
       - href: "In-Class_Exercise/In-Class_Ex04/In-Class_Exercise_4.html"
         text: "4. Boxplot"
       - href: "In-Class_Exercise/In-Class_Ex05/In-Class_Exercise_5a.html"
-        text: "5a. Building a regression model"
+        text: "5a. Visual Analytics for Building Better Explanatory Models"
     
     - text: "Take-Home Exercise"
       menu:

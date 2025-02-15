@@ -8,7 +8,7 @@
 
 <meta name="author" content="Zanelle Lee Wenfang">
 
-<title>In-Class Exercise 5a (Building a regression model) – ISSS608 Zanelle’s enclosed space</title>
+<title>In-Class Exercise 5a (Visual Analytics for Building Better Explanatory Models) – ISSS608 Zanelle’s enclosed space</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -213,7 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="../../In-Class_Exercise/In-Class_Ex05/In-Class_Exercise_5a.html">
- <span class="dropdown-text">5a. Building a regression model</span></a>
+ <span class="dropdown-text">5a. Visual Analytics for Building Better Explanatory Models</span></a>
   </li>  
     </ul>
   </li>
@@ -260,6 +260,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#making-variables-into-vectors" id="toc-making-variables-into-vectors" class="nav-link" data-scroll-target="#making-variables-into-vectors">Making variables into vectors</a></li>
   <li><a href="#expnumviz" id="toc-expnumviz" class="nav-link" data-scroll-target="#expnumviz">ExpNumViz</a></li>
   <li><a href="#checking-model" id="toc-checking-model" class="nav-link" data-scroll-target="#checking-model">Checking model</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   </ul>
 </nav>
     </div>
@@ -268,7 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">In-Class Exercise 5a (Building a regression model)</h1>
+<h1 class="title">In-Class Exercise 5a (Visual Analytics for Building Better Explanatory Models)</h1>
 </div>
 
 
@@ -300,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="getting-started" class="level3">
 <h3 class="anchored" data-anchor-id="getting-started">Getting Started</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, readxl, SmartEDA, easystats, gtsummary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, readxl, SmartEDA, easystats, gtsummary, ggstatsplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -776,23 +777,23 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">list</span>(sigma <span class="sc">~</span> <span class="st">"\U03C3"</span>),</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">include =</span> <span class="fu">c</span>(r.squared, adj.r.squared, AIC, statistic, p.value, sigma))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="usnibobvcw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#usnibobvcw table {
+<div id="xbukitazdc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xbukitazdc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#usnibobvcw thead, #usnibobvcw tbody, #usnibobvcw tfoot, #usnibobvcw tr, #usnibobvcw td, #usnibobvcw th {
+#xbukitazdc thead, #xbukitazdc tbody, #xbukitazdc tfoot, #xbukitazdc tr, #xbukitazdc td, #xbukitazdc th {
   border-style: none;
 }
 
-#usnibobvcw p {
+#xbukitazdc p {
   margin: 0;
   padding: 0;
 }
 
-#usnibobvcw .gt_table {
+#xbukitazdc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -818,12 +819,12 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_caption {
+#xbukitazdc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#usnibobvcw .gt_title {
+#xbukitazdc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -835,7 +836,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-width: 0;
 }
 
-#usnibobvcw .gt_subtitle {
+#xbukitazdc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -847,7 +848,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-top-width: 0;
 }
 
-#usnibobvcw .gt_heading {
+#xbukitazdc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -859,13 +860,13 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_bottom_border {
+#xbukitazdc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_col_headings {
+#xbukitazdc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -880,7 +881,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_col_heading {
+#xbukitazdc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -900,7 +901,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   overflow-x: hidden;
 }
 
-#usnibobvcw .gt_column_spanner_outer {
+#xbukitazdc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -912,15 +913,15 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 4px;
 }
 
-#usnibobvcw .gt_column_spanner_outer:first-child {
+#xbukitazdc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#usnibobvcw .gt_column_spanner_outer:last-child {
+#xbukitazdc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#usnibobvcw .gt_column_spanner {
+#xbukitazdc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -932,11 +933,11 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   width: 100%;
 }
 
-#usnibobvcw .gt_spanner_row {
+#xbukitazdc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#usnibobvcw .gt_group_heading {
+#xbukitazdc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -962,7 +963,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   text-align: left;
 }
 
-#usnibobvcw .gt_empty_group_heading {
+#xbukitazdc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -977,15 +978,15 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   vertical-align: middle;
 }
 
-#usnibobvcw .gt_from_md > :first-child {
+#xbukitazdc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#usnibobvcw .gt_from_md > :last-child {
+#xbukitazdc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#usnibobvcw .gt_row {
+#xbukitazdc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1004,7 +1005,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   overflow-x: hidden;
 }
 
-#usnibobvcw .gt_stub {
+#xbukitazdc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1017,7 +1018,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#usnibobvcw .gt_stub_row_group {
+#xbukitazdc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1031,15 +1032,15 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   vertical-align: top;
 }
 
-#usnibobvcw .gt_row_group_first td {
+#xbukitazdc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#usnibobvcw .gt_row_group_first th {
+#xbukitazdc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#usnibobvcw .gt_summary_row {
+#xbukitazdc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1049,16 +1050,16 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#usnibobvcw .gt_first_summary_row {
+#xbukitazdc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_first_summary_row.thick {
+#xbukitazdc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#usnibobvcw .gt_last_summary_row {
+#xbukitazdc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1068,7 +1069,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_grand_summary_row {
+#xbukitazdc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1078,7 +1079,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#usnibobvcw .gt_first_grand_summary_row {
+#xbukitazdc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1088,7 +1089,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_last_grand_summary_row_top {
+#xbukitazdc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1098,11 +1099,11 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_striped {
+#xbukitazdc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#usnibobvcw .gt_table_body {
+#xbukitazdc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1111,7 +1112,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_footnotes {
+#xbukitazdc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1125,7 +1126,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_footnote {
+#xbukitazdc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1134,7 +1135,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#usnibobvcw .gt_sourcenotes {
+#xbukitazdc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1148,7 +1149,7 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#usnibobvcw .gt_sourcenote {
+#xbukitazdc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1156,72 +1157,72 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#usnibobvcw .gt_left {
+#xbukitazdc .gt_left {
   text-align: left;
 }
 
-#usnibobvcw .gt_center {
+#xbukitazdc .gt_center {
   text-align: center;
 }
 
-#usnibobvcw .gt_right {
+#xbukitazdc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#usnibobvcw .gt_font_normal {
+#xbukitazdc .gt_font_normal {
   font-weight: normal;
 }
 
-#usnibobvcw .gt_font_bold {
+#xbukitazdc .gt_font_bold {
   font-weight: bold;
 }
 
-#usnibobvcw .gt_font_italic {
+#xbukitazdc .gt_font_italic {
   font-style: italic;
 }
 
-#usnibobvcw .gt_super {
+#xbukitazdc .gt_super {
   font-size: 65%;
 }
 
-#usnibobvcw .gt_footnote_marks {
+#xbukitazdc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#usnibobvcw .gt_asterisk {
+#xbukitazdc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#usnibobvcw .gt_indent_1 {
+#xbukitazdc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#usnibobvcw .gt_indent_2 {
+#xbukitazdc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#usnibobvcw .gt_indent_3 {
+#xbukitazdc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#usnibobvcw .gt_indent_4 {
+#xbukitazdc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#usnibobvcw .gt_indent_5 {
+#xbukitazdc .gt_indent_5 {
   text-indent: 25px;
 }
 
-#usnibobvcw .katex-display {
+#xbukitazdc .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#usnibobvcw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xbukitazdc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1271,6 +1272,43 @@ F-statistic:  2005 on 4 and 1431 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p><em>summary()</em> and <em>tbl_regression()</em> gives the same output except the latter nicely packs output data into a table form. <a href="https://forum.juce.com/t/how-to-display-greek-characters-in-labels-of-gui/43967">Greek letters</a> can also be inserted to display the symbol needed. <em>include()</em> forces it to calculate the variables that is desired and is reflected in a line after the output table.</p>
+</section>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>p_model1 <span class="ot">&lt;-</span> <span class="fu">parameters</span>(model1) <span class="co">#extracting parameters from table above</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>p_model1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter        | Coefficient |       SE |              95% CI | t(1431) |      p
+----------------------------------------------------------------------------------
+(Intercept)      |    -2185.52 |   972.19 | [-4092.59, -278.45] |   -2.25 | 0.025 
+Age 08 04        |     -119.49 |     2.76 | [ -124.91, -114.08] |  -43.29 | &lt; .001
+KM               |       -0.02 | 1.20e-03 | [   -0.03,   -0.02] |  -20.04 | &lt; .001
+Weight           |       19.72 |     0.84 | [   18.08,   21.36] |   23.53 | &lt; .001
+Guarantee Period |       26.82 |    12.61 | [    2.08,   51.56] |    2.13 | 0.034 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(model1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="In-Class_Exercise_5a_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcoefstats</span>(model1,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">output =</span> <span class="st">"plot"</span>) <span class="co">#improved version of above table (more info)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="In-Class_Exercise_5a_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>

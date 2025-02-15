@@ -1,5 +1,5 @@
 ---
-title: "In-Class Exercise 5a (Building a regression model)"
+title: "In-Class Exercise 5a (Visual Analytics for Building Better Explanatory Models)"
 author: "Zanelle Lee Wenfang"
 date-modified: "last-modified"
 execute:

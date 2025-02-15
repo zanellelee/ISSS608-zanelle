@@ -9,3 +9,17 @@ execute:
     warning: false
     freeze: true
 ---
+
+### Overview
+
+### R packages
+
+```{r}
+pacman::p_load(readr, SmartEDA, tidyverse)
+```
+
+### Load data
+
+```{r}
+data <- read_csv("japan_heart_attack_dataset.csv")
+```
