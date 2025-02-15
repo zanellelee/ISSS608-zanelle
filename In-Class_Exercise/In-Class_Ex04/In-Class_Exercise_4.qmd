@@ -1,5 +1,5 @@
 ---
-title: "In-Class Exercise 4"
+title: "In-Class Exercise 4 (Boxplot)"
 author: "Zanelle Lee Wenfang"
 date-modified: "last-modified"
 execute:

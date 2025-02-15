@@ -58,7 +58,7 @@
   {
     "objectID": "In-Class_Exercise/In-Class_Ex04/In-Class_Exercise_4.html",
     "href": "In-Class_Exercise/In-Class_Ex04/In-Class_Exercise_4.html",
-    "title": "In-Class Exercise 4",
+    "title": "In-Class Exercise 4 (Boxplot)",
     "section": "",
     "text": "Installing and loading the packages\n\npacman::p_load(haven, SmartEDA, tidyverse, tidymodels)\n\n\n\nData import\n\nexam_data &lt;- read.csv(\"Exam_data.csv\")\n\n\n\nPlotting boxplot\n\nggplot(data = exam_data,\n       aes(x = ENGLISH,\n           y = CLASS)) +\n  geom_boxplot()"
   },

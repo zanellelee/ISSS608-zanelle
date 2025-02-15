@@ -12,7 +12,7 @@ execute:
 ### Getting Started
 
 ```{r}
-pacman::p_load(tidyverse, readxl, SmartEDA, easystats, gtsummary)
+pacman::p_load(tidyverse, readxl, SmartEDA, easystats, gtsummary, ggstatsplot)
 ```
 
 ::: callout-note
@@ -153,3 +153,19 @@ tbl_regression(model1, intercept = TRUE) %>%
 ```
 
 *summary()* and *tbl_regression()* gives the same output except the latter nicely packs output data into a table form. [Greek letters](https://forum.juce.com/t/how-to-display-greek-characters-in-labels-of-gui/43967) can also be inserted to display the symbol needed. *include()* forces it to calculate the variables that is desired and is reflected in a line after the output table.
+
+### 
+
+```{r}
+p_model1 <- parameters(model1) #extracting parameters from table above
+p_model1
+```
+
+```{r}
+plot(parameters(model1))
+```
+
+```{r}
+ggcoefstats(model1,
+            output = "plot") #improved version of above table (more info)
+```
