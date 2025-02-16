@@ -257,7 +257,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1. Overview</a></li>
   <li><a href="#r-packages" id="toc-r-packages" class="nav-link" data-scroll-target="#r-packages">2. R packages</a></li>
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">3. Load data</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">3. Data</a></li>
+  <li><a href="#data-exploration-and-analysis" id="toc-data-exploration-and-analysis" class="nav-link" data-scroll-target="#data-exploration-and-analysis">4. Data exploration and analysis</a></li>
   </ul>
 </nav>
     </div>
@@ -290,7 +291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 16, 2025</p>
+      <p class="date-modified">February 17, 2025</p>
     </div>
   </div>
     
@@ -303,6 +304,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level3">
 <h3 class="anchored" data-anchor-id="overview">1. Overview</h3>
+<section id="background" class="level4">
+<h4 class="anchored" data-anchor-id="background">1.1. Background</h4>
+<p>In this exercise, Japan’s heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any correlations. Insights from this analysis will then hopefully aid as a preventive measure.</p>
+</section>
+<section id="objectives" class="level4">
+<h4 class="anchored" data-anchor-id="objectives">1.2. Objectives</h4>
+<p>Using the dataset <a href="https://www.kaggle.com/datasets/ashaychoudhary/heart-attack-in-japan-youth-vs-adult">Heart Attack in Japan Youth vs Adult</a>, we attempt to understand the heart attack situation in Japan and gain insights surrounding the different age groups.</p>
+</section>
 </section>
 <section id="r-packages" class="level3">
 <h3 class="anchored" data-anchor-id="r-packages">2. R packages</h3>
@@ -316,30 +325,562 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>readr</td>
+<td><a href="http://tidyverse.org/packages/">tidyverse</a></td>
+<td>A collection of packages to do various types data analyses.</td>
+</tr>
+<tr class="even">
+<td><a href="https://cran.r-project.org/web/packages/SmartEDA/vignettes/SmartEDA.html">SmartEDA</a></td>
+<td>For initial exploratory analysis describing the structure and relationships present in the data without lengthy R codes.</td>
+</tr>
+<tr class="odd">
+<td>ggdist</td>
 <td></td>
 </tr>
 <tr class="even">
-<td>SmartEDA</td>
+<td>ggpubr</td>
 <td></td>
 </tr>
 <tr class="odd">
-<td>tidyverse</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readr, SmartEDA, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, SmartEDA, ggdist, ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="load-data" class="level3">
-<h3 class="anchored" data-anchor-id="load-data">3. Load data</h3>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">3. Data</h3>
+<section id="loading-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="loading-the-data">3.1. Loading the data</h4>
+<p>The dataset is first loaded using <em>read_csv</em>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"japan_heart_attack_dataset.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>japan_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"japan_heart_attack_dataset.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="data-overview-and-selection" class="level4">
+<h4 class="anchored" data-anchor-id="data-overview-and-selection">3.2. Data overview and selection</h4>
+<p>First, we look at the dataset to see if there are any missing or duplicated values. Using <em>ExpData</em>, there are 30,000 rows of data with no missing values nor duplicated rows. It should also be noted that there are 15 extra columns of numerical values that are meaningless as they seem to be the results of certain calculations which are not stated.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Summary Table 1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Index           Variable_Name Variable_Type Sample_n Missing_Count
+1      1                     Age       numeric    30000             0
+2      2                  Gender     character    30000             0
+3      3                  Region     character    30000             0
+4      4         Smoking_History     character    30000             0
+5      5        Diabetes_History     character    30000             0
+6      6    Hypertension_History     character    30000             0
+7      7       Cholesterol_Level       numeric    30000             0
+8      8       Physical_Activity     character    30000             0
+9      9            Diet_Quality     character    30000             0
+10    10     Alcohol_Consumption     character    30000             0
+11    11           Stress_Levels       numeric    30000             0
+12    12                     BMI       numeric    30000             0
+13    13              Heart_Rate       numeric    30000             0
+14    14             Systolic_BP       numeric    30000             0
+15    15            Diastolic_BP       numeric    30000             0
+16    16          Family_History     character    30000             0
+17    17 Heart_Attack_Occurrence     character    30000             0
+18    18          Extra_Column_1       numeric    30000             0
+19    19          Extra_Column_2       numeric    30000             0
+20    20          Extra_Column_3       numeric    30000             0
+21    21          Extra_Column_4       numeric    30000             0
+22    22          Extra_Column_5       numeric    30000             0
+23    23          Extra_Column_6       numeric    30000             0
+24    24          Extra_Column_7       numeric    30000             0
+25    25          Extra_Column_8       numeric    30000             0
+26    26          Extra_Column_9       numeric    30000             0
+27    27         Extra_Column_10       numeric    30000             0
+28    28         Extra_Column_11       numeric    30000             0
+29    29         Extra_Column_12       numeric    30000             0
+30    30         Extra_Column_13       numeric    30000             0
+31    31         Extra_Column_14       numeric    30000             0
+32    32         Extra_Column_15       numeric    30000             0
+   Per_of_Missing No_of_distinct_values
+1               0                    62
+2               0                     2
+3               0                     2
+4               0                     2
+5               0                     2
+6               0                     2
+7               0                 30000
+8               0                     3
+9               0                     3
+10              0                     4
+11              0                 29613
+12              0                 30000
+13              0                 30000
+14              0                 30000
+15              0                 30000
+16              0                     2
+17              0                     2
+18              0                 30000
+19              0                 30000
+20              0                 30000
+21              0                 30000
+22              0                 30000
+23              0                 30000
+24              0                 30000
+25              0                 30000
+26              0                 30000
+27              0                 30000
+28              0                 30000
+29              0                 30000
+30              0                 30000
+31              0                 30000
+32              0                 30000</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>stats1 <span class="ot">&lt;-</span> <span class="fu">ExpData</span>(<span class="at">data=</span>japan_data, <span class="at">type=</span><span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>stats1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Summary Table 2</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Index           Variable_Name Variable_Type Sample_n Missing_Count
+1      1                     Age       numeric    30000             0
+2      2                  Gender     character    30000             0
+3      3                  Region     character    30000             0
+4      4         Smoking_History     character    30000             0
+5      5        Diabetes_History     character    30000             0
+6      6    Hypertension_History     character    30000             0
+7      7       Cholesterol_Level       numeric    30000             0
+8      8       Physical_Activity     character    30000             0
+9      9            Diet_Quality     character    30000             0
+10    10     Alcohol_Consumption     character    30000             0
+11    11           Stress_Levels       numeric    30000             0
+12    12                     BMI       numeric    30000             0
+13    13              Heart_Rate       numeric    30000             0
+14    14             Systolic_BP       numeric    30000             0
+15    15            Diastolic_BP       numeric    30000             0
+16    16          Family_History     character    30000             0
+17    17 Heart_Attack_Occurrence     character    30000             0
+18    18          Extra_Column_1       numeric    30000             0
+19    19          Extra_Column_2       numeric    30000             0
+20    20          Extra_Column_3       numeric    30000             0
+21    21          Extra_Column_4       numeric    30000             0
+22    22          Extra_Column_5       numeric    30000             0
+23    23          Extra_Column_6       numeric    30000             0
+24    24          Extra_Column_7       numeric    30000             0
+25    25          Extra_Column_8       numeric    30000             0
+26    26          Extra_Column_9       numeric    30000             0
+27    27         Extra_Column_10       numeric    30000             0
+28    28         Extra_Column_11       numeric    30000             0
+29    29         Extra_Column_12       numeric    30000             0
+30    30         Extra_Column_13       numeric    30000             0
+31    31         Extra_Column_14       numeric    30000             0
+32    32         Extra_Column_15       numeric    30000             0
+   Per_of_Missing No_of_distinct_values
+1               0                    62
+2               0                     2
+3               0                     2
+4               0                     2
+5               0                     2
+6               0                     2
+7               0                 30000
+8               0                     3
+9               0                     3
+10              0                     4
+11              0                 29613
+12              0                 30000
+13              0                 30000
+14              0                 30000
+15              0                 30000
+16              0                     2
+17              0                     2
+18              0                 30000
+19              0                 30000
+20              0                 30000
+21              0                 30000
+22              0                 30000
+23              0                 30000
+24              0                 30000
+25              0                 30000
+26              0                 30000
+27              0                 30000
+28              0                 30000
+29              0                 30000
+30              0                 30000
+31              0                 30000
+32              0                 30000</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stats2 <span class="ot">&lt;-</span> <span class="fu">ExpData</span>(<span class="at">data=</span>japan_data, <span class="at">type=</span><span class="dv">2</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>stats2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="data-preparation" class="level4">
+<h4 class="anchored" data-anchor-id="data-preparation">3.3. Data preparation</h4>
+<section id="selecting-desired-columns" class="level5">
+<h5 class="anchored" data-anchor-id="selecting-desired-columns">3.3.1. Selecting desired columns</h5>
+<p>As there is no information on these columns of data, these will be filtered away from the dataset and leaving 17 columns in the new filtered dataset, <em>filtered_data</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> <span class="fu">select</span>(japan_data, Age, Gender, Region, Smoking_History</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>, Diabetes_History, Hypertension_History, Cholesterol_Level, Physical_Activity, Diet_Quality,   Alcohol_Consumption,    Stress_Levels,  BMI,    Heart_Rate, Systolic_BP,    Diastolic_BP,   Family_History, Heart_Attack_Occurrence)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adjusting-variables" class="level5">
+<h5 class="anchored" data-anchor-id="adjusting-variables">3.3.2. Adjusting variables</h5>
+<section id="converting-variables-to-suitable-forms" class="level6">
+<h6 class="anchored" data-anchor-id="converting-variables-to-suitable-forms">3.3.2.1. Converting variables to suitable forms</h6>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Physical_Activity=</span>(<span class="fu">recode</span>(Physical_Activity, <span class="st">"Low"</span><span class="ot">=</span><span class="st">"1"</span>, <span class="st">"Moderate"</span><span class="ot">=</span><span class="st">"2"</span>, <span class="st">"High"</span><span class="ot">=</span><span class="st">"3"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Diet_Quality=</span>(<span class="fu">recode</span>(Diet_Quality, <span class="st">"Poor"</span><span class="ot">=</span><span class="st">"1"</span>, <span class="st">"Average"</span><span class="ot">=</span><span class="st">"2"</span>, <span class="st">"Good"</span><span class="ot">=</span><span class="st">"3"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Alcohol_Consumption=</span>(<span class="fu">recode</span>(Alcohol_Consumption, <span class="st">"None"</span><span class="ot">=</span><span class="st">"0"</span>, <span class="st">"Low"</span><span class="ot">=</span><span class="st">"1"</span>, <span class="st">"Moderate"</span><span class="ot">=</span><span class="st">"2"</span>, <span class="st">"High"</span><span class="ot">=</span><span class="st">"3"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="changing-variable-data-types" class="level6">
+<h6 class="anchored" data-anchor-id="changing-variable-data-types">3.3.2.2. Changing variable data types</h6>
+<p>Looking at the character rows, it is seen that they have fixed input and should be converted to factors using <em>mutate()</em> to reduce errors and improve efficiency. To check that this is done correctly, <em>glimpse()</em> is used.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gender"</span>, <span class="st">"Region"</span>, <span class="st">"Physical_Activity"</span>, <span class="st">"Diet_Quality"</span>, <span class="st">"Alcohol_Consumption"</span>, <span class="st">"Smoking_History"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>, <span class="st">"Diabetes_History"</span>, <span class="st">"Hypertension_History"</span>, <span class="st">"Family_History"</span>, <span class="st">"Heart_Attack_Occurrence"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(cols, as.factor))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(filtered_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 30,000
+Columns: 17
+$ Age                     &lt;dbl&gt; 56, 69, 46, 32, 60, 25, 78, 38, 56, 75, 36, 40…
+$ Gender                  &lt;fct&gt; Male, Male, Male, Female, Female, Female, Male…
+$ Region                  &lt;fct&gt; Urban, Urban, Rural, Urban, Rural, Rural, Urba…
+$ Smoking_History         &lt;fct&gt; Yes, No, Yes, No, No, No, No, Yes, No, No, No,…
+$ Diabetes_History        &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, No, No, N…
+$ Hypertension_History    &lt;fct&gt; No, No, No, No, No, No, Yes, No, Yes, No, Yes,…
+$ Cholesterol_Level       &lt;dbl&gt; 186.4002, 185.1367, 210.6966, 211.1655, 223.81…
+$ Physical_Activity       &lt;fct&gt; 2, 1, 1, 2, 3, 1, 3, 3, 2, 2, 2, 2, 1, 1, 3, 1…
+$ Diet_Quality            &lt;fct&gt; 1, 3, 2, 3, 3, 3, 1, 1, 2, 3, 2, 1, 2, 3, 1, 3…
+$ Alcohol_Consumption     &lt;fct&gt; 1, 1, 2, 3, 3, 3, 3, 0, 2, 2, 1, 2, 1, 2, 3, 1…
+$ Stress_Levels           &lt;dbl&gt; 3.644786, 3.384056, 3.810911, 6.014878, 6.8068…
+$ BMI                     &lt;dbl&gt; 33.96135, 28.24287, 27.60121, 23.71729, 19.771…
+$ Heart_Rate              &lt;dbl&gt; 72.30153, 57.45764, 64.65870, 55.13147, 76.667…
+$ Systolic_BP             &lt;dbl&gt; 123.90209, 129.89331, 145.65490, 131.78522, 10…
+$ Diastolic_BP            &lt;dbl&gt; 85.68281, 73.52426, 71.99481, 68.21133, 92.902…
+$ Family_History          &lt;fct&gt; No, Yes, No, No, No, No, No, No, No, Yes, Yes,…
+$ Heart_Attack_Occurrence &lt;fct&gt; No, No, No, No, No, No, No, No, Yes, No, No, N…</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="converting-variables-to-suitable-forms-1" class="level5">
+<h5 class="anchored" data-anchor-id="converting-variables-to-suitable-forms-1">3.3.3. Converting variables to suitable forms</h5>
+<section id="binning-age-into-age-groups" class="level6">
+<h6 class="anchored" data-anchor-id="binning-age-into-age-groups">3.3.3.1. Binning <em>Age</em> into Age Groups</h6>
+<p>To be able to gain better insights from the dataset, it was decided that <em>Age</em> should be binned into 4 separate bins - Youth, Adult, Middle-aged adult and Senior Citizen. The differences between the various age groups might be more visible than if it was kept as a continuous variable.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Age Classification">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Age Classification
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For this analysis, the age classification would be as such:</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Youth</td>
+<td>&lt;= 25 years old</td>
+</tr>
+<tr class="even">
+<td>Adult</td>
+<td>26 - 44 years old</td>
+</tr>
+<tr class="odd">
+<td>Middle-aged adult</td>
+<td>45 - 49 years old</td>
+</tr>
+<tr class="even">
+<td>Senior Citizen</td>
+<td>&gt;= 60 years old</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>binned_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Age_Group =</span> <span class="fu">cut</span>(Age, <span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">24</span>, <span class="dv">44</span>, <span class="dv">59</span>, <span class="dv">80</span>)))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>binned_data <span class="ot">&lt;-</span> binned_data <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(Age_Group, <span class="at">.after =</span> Age)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>binned_data <span class="ot">&lt;-</span> binned_data <span class="sc">%&gt;%</span> </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age_Group=</span>(<span class="fu">recode</span>(Age_Group, <span class="st">"(0,24]"</span><span class="ot">=</span><span class="st">"Youth"</span>, <span class="st">"(24,44]"</span><span class="ot">=</span><span class="st">"Adult"</span>, <span class="st">"(44,59]"</span><span class="ot">=</span><span class="st">"Middle-aged adult"</span>, <span class="st">"(59,80]"</span><span class="ot">=</span><span class="st">"Senior Citizen"</span>)))</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(binned_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 30,000
+Columns: 18
+$ Age                     &lt;dbl&gt; 56, 69, 46, 32, 60, 25, 78, 38, 56, 75, 36, 40…
+$ Age_Group               &lt;fct&gt; Middle-aged adult, Senior Citizen, Middle-aged…
+$ Gender                  &lt;fct&gt; Male, Male, Male, Female, Female, Female, Male…
+$ Region                  &lt;fct&gt; Urban, Urban, Rural, Urban, Rural, Rural, Urba…
+$ Smoking_History         &lt;fct&gt; Yes, No, Yes, No, No, No, No, Yes, No, No, No,…
+$ Diabetes_History        &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, No, No, N…
+$ Hypertension_History    &lt;fct&gt; No, No, No, No, No, No, Yes, No, Yes, No, Yes,…
+$ Cholesterol_Level       &lt;dbl&gt; 186.4002, 185.1367, 210.6966, 211.1655, 223.81…
+$ Physical_Activity       &lt;fct&gt; 2, 1, 1, 2, 3, 1, 3, 3, 2, 2, 2, 2, 1, 1, 3, 1…
+$ Diet_Quality            &lt;fct&gt; 1, 3, 2, 3, 3, 3, 1, 1, 2, 3, 2, 1, 2, 3, 1, 3…
+$ Alcohol_Consumption     &lt;fct&gt; 1, 1, 2, 3, 3, 3, 3, 0, 2, 2, 1, 2, 1, 2, 3, 1…
+$ Stress_Levels           &lt;dbl&gt; 3.644786, 3.384056, 3.810911, 6.014878, 6.8068…
+$ BMI                     &lt;dbl&gt; 33.96135, 28.24287, 27.60121, 23.71729, 19.771…
+$ Heart_Rate              &lt;dbl&gt; 72.30153, 57.45764, 64.65870, 55.13147, 76.667…
+$ Systolic_BP             &lt;dbl&gt; 123.90209, 129.89331, 145.65490, 131.78522, 10…
+$ Diastolic_BP            &lt;dbl&gt; 85.68281, 73.52426, 71.99481, 68.21133, 92.902…
+$ Family_History          &lt;fct&gt; No, Yes, No, No, No, No, No, No, No, Yes, Yes,…
+$ Heart_Attack_Occurrence &lt;fct&gt; No, No, No, No, No, No, No, No, Yes, No, No, N…</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It should be noted that several columns have measurements that consist of seemingly impossible values.</p>
+<p>The <em>BMI</em> column consists of single digit values. However, the <a href="https://apps.who.int/nutrition/landscape/help.aspx?menu=0&amp;helpid=420#:~:text=BMI%20%3C17.0%3A%20moderate%20and%20severe,BMI%20%E2%89%A525.0%3A%20overweight">World Health Organisation</a> states that BMI values of &lt;17.0 indicates moderate and severe thinness in adult populations and BMI &lt;16.0 is known to be associated with a markedly increased risk for ill-health, poor physical performance, lethargy and even death; thus making this cut-off point to be a valid extreme limit.</p>
+<p>The <a href="https://www.ncbi.nlm.nih.gov/books/NBK268/#:~:text=The%20minimum%20acceptable%20blood%20pressure,be%20great%20variation%20between%20patients.">minimum systolic blood pressure and diastolic blood pressure</a> is also stated to be 90 mm Hg systolic and 60 mm Hg diastolic while the lowest values in the dataset go as low as 56.2 mm Hg and 40.0 mm Hg (3s.f.) respectively.</p>
+<p>However, as the dataset did not clarify the units used as well as calculation methods to obtain these values. Thus, these values are not removed from the dataset but this discrepency should be taken into account.</p>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="data-exploration-and-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="data-exploration-and-analysis">4. Data exploration and analysis</h3>
+<section id="exploratory-data-analysis" class="level4">
+<h4 class="anchored" data-anchor-id="exploratory-data-analysis">4.1. Exploratory Data Analysis</h4>
+<section id="grouping-similar-variables" class="level5">
+<h5 class="anchored" data-anchor-id="grouping-similar-variables">4.1.1. Grouping similar variables</h5>
+<p>For more efficient analysis of the dataset, it is decided that the variables should be split to <strong>Uncontrollable</strong>, <strong>Lifestyle</strong> and <strong>Measurements</strong>. The way that it is split is as per follows:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Uncontrollable</th>
+<th>Lifestyle</th>
+<th>Measurements</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gender</td>
+<td>Smoking_History</td>
+<td>Diabetes_History</td>
+</tr>
+<tr class="even">
+<td>Region</td>
+<td>Physical_Activity</td>
+<td>Hypertension_History</td>
+</tr>
+<tr class="odd">
+<td>Family_History</td>
+<td>Diet_Quality</td>
+<td>Cholesterol_Level</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Alcohol_Consumption</td>
+<td>BMI</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Stress_Levels</td>
+<td>Heart_Rate</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Systolic_BP</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>Diastolic_BP</td>
+</tr>
+</tbody>
+</table>
+<p><em>Age</em> and <em>Heart_Attack_Occurrences</em> are not included in the table above as they are considered the target variables in this data. However, if they were to be placed, they would fall under <strong>Uncontrollable</strong>.</p>
+</section>
+<section id="age-vs-heart-attack-occurrence" class="level5">
+<h5 class="anchored" data-anchor-id="age-vs-heart-attack-occurrence">4.1.2. Age vs Heart Attack Occurrence</h5>
+<div class="callout callout-style-default callout-note callout-titled" title="See codes">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+See codes
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Heart_Attack_Occurrence)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">width=</span>.<span class="dv">8</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position=</span><span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">" "</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Heart Attack Occurrence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The percentages of heart attack occurrences in each age group can also be seen below.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>           Youth            Adult Middle-age adult   Senior Citizen 
+        9.126506        10.151254         9.894589         9.851760 </code></pre>
+</div>
+</div>
+</section>
+<section id="uncontrollable-vs-heart-attack-occurrence" class="level5">
+<h5 class="anchored" data-anchor-id="uncontrollable-vs-heart-attack-occurrence">4.1.3. Uncontrollable VS Heart Attack Occurrence</h5>
+<div class="callout callout-style-default callout-note callout-titled" title="See codes">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+See codes
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Gender)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha=</span><span class="fl">0.3</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Region)) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha=</span><span class="fl">0.3</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Family_History)) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha=</span><span class="fl">0.3</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Family History"</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>figure <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>(p1 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>), p2 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>), p3 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>),</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>figure</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="lifestyle-vs-heart-attack-occurrence" class="level5">
+<h5 class="anchored" data-anchor-id="lifestyle-vs-heart-attack-occurrence">4.1.4. Lifestyle VS Heart Attack Occurrence</h5>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Physical_Activity</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Diet_Quality</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false">Alcohol_Consumption</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Physical_Activity)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage of Physical Activity level"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Level of Physical Activity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Diet_Quality)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage of Diet Quality"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Diet Quality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Alcohol_Consumption)) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage of Alcohol_Consumption"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Alcohol_Consumption"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="measurements-vs-heart-attack-occurrence" class="level5">
+<h5 class="anchored" data-anchor-id="measurements-vs-heart-attack-occurrence">4.1.5. Measurements VS Heart Attack Occurrence</h5>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

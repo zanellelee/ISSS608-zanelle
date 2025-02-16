@@ -12,54 +12,291 @@ execute:
 
 ### 1. Overview
 
-In this exercise,
+#### 1.1. Background
+
+In this exercise, Japan's heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any correlations. Insights from this analysis will then hopefully aid as a preventive measure.
+
+#### 1.2. Objectives
+
+Using the dataset [Heart Attack in Japan Youth vs Adult](https://www.kaggle.com/datasets/ashaychoudhary/heart-attack-in-japan-youth-vs-adult), we attempt to understand the heart attack situation in Japan and gain insights surrounding the different age groups.
 
 ### 2. R packages
 
 Appropriate R packages will be installed and loaded for effective data processing and transformation. The R packages used and its respective function will be displayed in the table below.
 
 | R Package | Function |
-|----|----|
-| tidyverse | A collection of packages to do various types data analyses. |
+|--------------------------|----------------------------------------------|
+| [tidyverse](http://tidyverse.org/packages/) | A collection of packages to do various types data analyses. |
 | [SmartEDA](https://cran.r-project.org/web/packages/SmartEDA/vignettes/SmartEDA.html) | For initial exploratory analysis describing the structure and relationships present in the data without lengthy R codes. |
-| knitr |  |
-| ggthemes |  |
+| ggdist |  |
+| ggpubr |  |
 |  |  |
 |  |  |
 
 ```{r}
-pacman::p_load(tidyverse, SmartEDA)
+pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr)
 ```
 
 ### 3. Data
 
 #### 3.1. Loading the data
 
-Using the dataset [Heart Attack in Japan Youth vs Adult](https://www.kaggle.com/datasets/ashaychoudhary/heart-attack-in-japan-youth-vs-adult), we attempt to understand the heart attack situation in Japan and gain insights surrounding the different age groups .
+The dataset is first loaded using *read_csv*.
 
 ```{r}
 japan_data <- read_csv("japan_heart_attack_dataset.csv")
 ```
 
-#### 3.2. Data overview
+#### 3.2. Data overview and selection
 
-::: callout-note
-For this analysis, the age classification would be as such:
+First, we look at the dataset to see if there are any missing or duplicated values. Using *ExpData*, there are 30,000 rows of data with no missing values nor duplicated rows. It should also be noted that there are 15 extra columns of numerical values that are meaningless as they seem to be the results of certain calculations which are not stated.
 
-Youth \<=25 years old
-
-Adult 26-44 years old
-
-Middle aged adults 45-59 years old
-
-Senior citizens \>= 60 years old
-:::
-
-First, we look at the dataset to see if there are any missing or duplicated values. Using *ExpData*, there are 30,000 rows of data with no missing values nor duplicated rows.
+::: panel-tabset
+## Summary Table 1
 
 ```{r}
-stats1 <- ExpData(data=japan_data, type=1)
-stats2 <- ExpData(data=japan_data, type=2)
+#| echo: false 
+stats1 <- ExpData(data=japan_data, type=2)
+stats1
 ```
 
-### 5. Task
+## Code
+
+```{r}
+#| eval: false 
+stats1 <- ExpData(data=japan_data, type=2)
+stats1
+```
+:::
+
+::: panel-tabset
+## Summary Table 2
+
+```{r}
+#| echo: false
+stats2 <- ExpData(data=japan_data, type=2)
+stats2
+```
+
+## Code
+
+```{r}
+#| eval: false
+stats2 <- ExpData(data=japan_data, type=2)
+stats2
+```
+:::
+
+#### 3.3. Data preparation
+
+##### 3.3.1. Selecting desired columns
+
+As there is no information on these columns of data, these will be filtered away from the dataset and leaving 17 columns in the new filtered dataset, *filtered_data*.
+
+```{r}
+filtered_data <- select(japan_data, Age, Gender, Region, Smoking_History
+, Diabetes_History, Hypertension_History, Cholesterol_Level, Physical_Activity, Diet_Quality,	Alcohol_Consumption,	Stress_Levels,	BMI,	Heart_Rate,	Systolic_BP,	Diastolic_BP,	Family_History,	Heart_Attack_Occurrence)
+```
+
+##### 3.3.2. Adjusting variables
+
+###### 3.3.2.1. Converting variables to suitable forms
+
+```{r}
+filtered_data <- filtered_data %>% 
+  mutate(Physical_Activity=(recode(Physical_Activity, "Low"="1", "Moderate"="2", "High"="3")))
+```
+
+```{r}
+filtered_data <- filtered_data %>% 
+  mutate(Diet_Quality=(recode(Diet_Quality, "Poor"="1", "Average"="2", "Good"="3")))
+```
+
+```{r}
+filtered_data <- filtered_data %>% 
+  mutate(Alcohol_Consumption=(recode(Alcohol_Consumption, "None"="0", "Low"="1", "Moderate"="2", "High"="3")))
+```
+
+###### 3.3.2.2. Changing variable data types
+
+Looking at the character rows, it is seen that they have fixed input and should be converted to factors using *mutate()* to reduce errors and improve efficiency. To check that this is done correctly, *glimpse()* is used.
+
+```{r}
+cols <- c("Gender", "Region", "Physical_Activity", "Diet_Quality", "Alcohol_Consumption", "Smoking_History"
+, "Diabetes_History", "Hypertension_History", "Family_History",	"Heart_Attack_Occurrence")
+filtered_data <- filtered_data %>%
+  mutate(across(cols, as.factor))
+
+glimpse(filtered_data)
+```
+
+##### 3.3.3. Converting variables to suitable forms
+
+###### 3.3.3.1. Binning *Age* into Age Groups
+
+To be able to gain better insights from the dataset, it was decided that *Age* should be binned into 4 separate bins - Youth, Adult, Middle-aged adult and Senior Citizen. The differences between the various age groups might be more visible than if it was kept as a continuous variable.
+
+::: {.callout-tip title="Age Classification"}
+For this analysis, the age classification would be as such:
+
+|                   |                   |
+|-------------------|-------------------|
+| Youth             | \<= 25 years old  |
+| Adult             | 26 - 44 years old |
+| Middle-aged adult | 45 - 49 years old |
+| Senior Citizen    | \>= 60 years old  |
+:::
+
+```{r}
+binned_data <- filtered_data %>% mutate(Age_Group = cut(Age, breaks=c(0, 24, 44, 59, 80)))
+
+binned_data <- binned_data %>% 
+  relocate(Age_Group, .after = Age)
+
+binned_data <- binned_data %>% 
+  mutate(Age_Group=(recode(Age_Group, "(0,24]"="Youth", "(24,44]"="Adult", "(44,59]"="Middle-aged adult", "(59,80]"="Senior Citizen")))
+glimpse(binned_data)
+```
+
+::: callout-caution
+It should be noted that several columns have measurements that consist of seemingly impossible values.
+
+The *BMI* column consists of single digit values. However, the [World Health Organisation](https://apps.who.int/nutrition/landscape/help.aspx?menu=0&helpid=420#:~:text=BMI%20%3C17.0%3A%20moderate%20and%20severe,BMI%20%E2%89%A525.0%3A%20overweight) states that BMI values of \<17.0 indicates moderate and severe thinness in adult populations and BMI \<16.0 is known to be associated with a markedly increased risk for ill-health, poor physical performance, lethargy and even death; thus making this cut-off point to be a valid extreme limit.
+
+The [minimum systolic blood pressure and diastolic blood pressure](https://www.ncbi.nlm.nih.gov/books/NBK268/#:~:text=The%20minimum%20acceptable%20blood%20pressure,be%20great%20variation%20between%20patients.) is also stated to be 90 mm Hg systolic and 60 mm Hg diastolic while the lowest values in the dataset go as low as 56.2 mm Hg and 40.0 mm Hg (3s.f.) respectively.
+
+However, as the dataset did not clarify the units used as well as calculation methods to obtain these values. Thus, these values are not removed from the dataset but this discrepency should be taken into account.
+:::
+
+### 4. Data exploration and analysis
+
+#### 4.1. Exploratory Data Analysis
+
+##### 4.1.1. Grouping similar variables
+
+For more efficient analysis of the dataset, it is decided that the variables should be split to **Uncontrollable**, **Lifestyle** and **Measurements**. The way that it is split is as per follows:
+
+| Uncontrollable | Lifestyle           | Measurements         |
+|----------------|---------------------|----------------------|
+| Gender         | Smoking_History     | Diabetes_History     |
+| Region         | Physical_Activity   | Hypertension_History |
+| Family_History | Diet_Quality        | Cholesterol_Level    |
+|                | Alcohol_Consumption | BMI                  |
+|                | Stress_Levels       | Heart_Rate           |
+|                |                     | Systolic_BP          |
+|                |                     | Diastolic_BP         |
+
+*Age* and *Heart_Attack_Occurrences* are not included in the table above as they are considered the target variables in this data. However, if they were to be placed, they would fall under **Uncontrollable**.
+
+##### 4.1.2. Age vs Heart Attack Occurrence
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r}
+#| eval: false
+ggplot(data=binned_data, aes(x=Age_Group, fill=Heart_Attack_Occurrence)) +
+  geom_bar(width=.8, alpha = 0.7, position="dodge") +
+  ggtitle(" ") + xlab("Age Group") + labs(fill="Heart Attack Occurrence")
+```
+:::
+
+```{r}
+#| echo: false
+ggplot(data=binned_data, aes(x=Age_Group, fill=Heart_Attack_Occurrence)) +
+  geom_bar(width=.8, alpha = 0.7, position="dodge") +
+  ggtitle(" ") + xlab("Age Group") + labs(fill="Heart Attack Occurrence")
+```
+
+```{r}
+#| echo: false
+Y_HA <- nrow(binned_data[binned_data$Age_Group=="Youth" & binned_data$Heart_Attack_Occurrence=="Yes",])/ nrow(binned_data[binned_data$Age_Group=="Youth",]) *100
+
+A_HA <- nrow(binned_data[binned_data$Age_Group=="Adult" & binned_data$Heart_Attack_Occurrence=="Yes",])/ nrow(binned_data[binned_data$Age_Group=="Adult",]) *100
+
+M_HA <- nrow(binned_data[binned_data$Age_Group=="Middle-aged adult" & binned_data$Heart_Attack_Occurrence=="Yes",])/ nrow(binned_data[binned_data$Age_Group=="Middle-aged adult",]) *100
+
+S_HA <- nrow(binned_data[binned_data$Age_Group=="Senior Citizen" & binned_data$Heart_Attack_Occurrence=="Yes",])/ nrow(binned_data[binned_data$Age_Group=="Senior Citizen",]) *100
+```
+
+The percentages of heart attack occurrences in each age group can also be seen below.
+
+```{r}
+#| echo: false
+percentage <- c("Youth"=Y_HA, "Adult"=A_HA, "Middle-age adult"=M_HA, "Senior Citizen"=S_HA)
+percentage
+
+```
+
+##### 4.1.3. Uncontrollable VS Heart Attack Occurrence
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r}
+#| eval: false
+p1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age")
+
+p2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age")
+
+p3 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Family_History)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age") + labs(fill="Family History")
+
+figure <- ggarrange(p1 + rremove("ylab") + rremove("xlab"), p2 + rremove("xlab"), p3 + rremove("ylab"),
+                    ncol = 1, nrow = 3)
+figure
+```
+:::
+
+```{r}
+#| echo: false
+p1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age")
+
+p2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age")
+
+p3 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Family_History)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age") + labs(fill="Family History")
+
+figure <- ggarrange(p1 + rremove("ylab") + rremove("xlab"), p2 + rremove("xlab"), p3 + rremove("ylab"),
+                    ncol = 1, nrow = 3)
+figure
+```
+
+##### 4.1.4. Lifestyle VS Heart Attack Occurrence
+
+::: panel-tabset
+## Physical_Activity
+
+```{r}
+ggplot(data=binned_data, aes(x=Age_Group, fill=Physical_Activity)) +
+  geom_bar(alpha = 0.7, width= 0.8, stat="count", position="fill") +
+  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
+  ylab("Percentage of Physical Activity level") + labs(fill="Level of Physical Activity")
+```
+
+## Diet_Quality
+
+```{r}
+ggplot(data=binned_data, aes(x=Age_Group, fill=Diet_Quality)) +
+  geom_bar(alpha = 0.7, width= 0.8, stat="count", position="fill") +
+  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
+  ylab("Percentage of Diet Quality") + labs(fill="Diet Quality")
+```
+
+## Alcohol_Consumption
+
+```{r}
+ggplot(data=binned_data, aes(x=Age_Group, fill=Alcohol_Consumption)) +
+  geom_bar(alpha = 0.7, width= 0.8, stat="count", position="fill") +
+  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
+  ylab("Percentage of Alcohol_Consumption") + labs(fill="Alcohol_Consumption")
+```
+:::
+
+##### 4.1.5. Measurements VS Heart Attack Occurrence
