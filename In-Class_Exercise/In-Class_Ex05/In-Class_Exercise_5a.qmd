@@ -103,7 +103,7 @@ car_resale %>%
 
 They are plotted as bar charts and not histograms as the numbers are categorical variables.
 
-### Checking model
+### Summary statistics
 
 ::: callout-note
 Use *performance* package to check the model created.
@@ -120,8 +120,10 @@ model
 check_collinearity(model)
 ```
 
+High VIF (Variance Inflation Factor) of \>5-10 or low tolerance of \<0.1 are considered problematic and suggests multicollinearity.
+
 ```{r}
-check_c <- check_collinearity(model)
+check_c <- check_collinearity(model) #can put into variable
 plot(check_c)
 ```
 
@@ -141,9 +143,14 @@ check_normality(model1)
 
 Removing *Mfg_Year* due to high collinearity. Check for normality (one of the diagnostic checks) - normality assumption test usually using p-value.
 
+::: panel-tabset
+## summary()
+
 ```{r}
 summary(model1)
 ```
+
+## tbl_regression()
 
 ```{r}
 tbl_regression(model1, intercept = TRUE) %>%
@@ -151,21 +158,28 @@ tbl_regression(model1, intercept = TRUE) %>%
     label = list(sigma ~ "\U03C3"),
     include = c(r.squared, adj.r.squared, AIC, statistic, p.value, sigma))
 ```
+:::
 
 *summary()* and *tbl_regression()* gives the same output except the latter nicely packs output data into a table form. [Greek letters](https://forum.juce.com/t/how-to-display-greek-characters-in-labels-of-gui/43967) can also be inserted to display the symbol needed. *include()* forces it to calculate the variables that is desired and is reflected in a line after the output table.
 
-### 
+### Model Parameters
 
 ```{r}
 p_model1 <- parameters(model1) #extracting parameters from table above
 p_model1
 ```
 
+::: panel-tabset
+## Plot1
+
 ```{r}
 plot(parameters(model1))
 ```
+
+## Plot2 (better)
 
 ```{r}
 ggcoefstats(model1,
             output = "plot") #improved version of above table (more info)
 ```
+:::

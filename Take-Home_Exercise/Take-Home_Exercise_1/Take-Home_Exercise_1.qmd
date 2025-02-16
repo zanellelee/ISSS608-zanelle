@@ -10,16 +10,56 @@ execute:
     freeze: true
 ---
 
-### Overview
+### 1. Overview
 
-### R packages
+In this exercise,
+
+### 2. R packages
+
+Appropriate R packages will be installed and loaded for effective data processing and transformation. The R packages used and its respective function will be displayed in the table below.
+
+| R Package | Function |
+|----|----|
+| tidyverse | A collection of packages to do various types data analyses. |
+| [SmartEDA](https://cran.r-project.org/web/packages/SmartEDA/vignettes/SmartEDA.html) | For initial exploratory analysis describing the structure and relationships present in the data without lengthy R codes. |
+| knitr |  |
+| ggthemes |  |
+|  |  |
+|  |  |
 
 ```{r}
-pacman::p_load(readr, SmartEDA, tidyverse)
+pacman::p_load(tidyverse, SmartEDA)
 ```
 
-### Load data
+### 3. Data
+
+#### 3.1. Loading the data
+
+Using the dataset [Heart Attack in Japan Youth vs Adult](https://www.kaggle.com/datasets/ashaychoudhary/heart-attack-in-japan-youth-vs-adult), we attempt to understand the heart attack situation in Japan and gain insights surrounding the different age groups .
 
 ```{r}
-data <- read_csv("japan_heart_attack_dataset.csv")
+japan_data <- read_csv("japan_heart_attack_dataset.csv")
 ```
+
+#### 3.2. Data overview
+
+::: callout-note
+For this analysis, the age classification would be as such:
+
+Youth \<=25 years old
+
+Adult 26-44 years old
+
+Middle aged adults 45-59 years old
+
+Senior citizens \>= 60 years old
+:::
+
+First, we look at the dataset to see if there are any missing or duplicated values. Using *ExpData*, there are 30,000 rows of data with no missing values nor duplicated rows.
+
+```{r}
+stats1 <- ExpData(data=japan_data, type=1)
+stats2 <- ExpData(data=japan_data, type=2)
+```
+
+### 5. Task

@@ -1,0 +1,15 @@
+{
+  "hash": "00bbaf9a0fcf2a90d2b6d243067e0d61",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Take Home Exercise 1\"\nauthor: \"Zanelle Lee Wenfang\"\ndate: \"February 1, 2025\"\ndate-modified: \"last-modified\"\nexecute:\n    echo: true\n    eval: true\n    warning: false\n    freeze: true\n---\n\n\n\n### 1. Overview\n\n### 2. R packages\n\nAppropriate R packages will be installed and loaded for effective data processing and transformation. The R packages used and its respective function will be displayed in the table below.\n\n| R Package | Function |\n|-----------|----------|\n| readr     |          |\n| SmartEDA  |          |\n| tidyverse |          |\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(readr, SmartEDA, tidyverse)\n```\n:::\n\n\n\n### 3. Load data\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndata <- read_csv(\"japan_heart_attack_dataset.csv\")\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
