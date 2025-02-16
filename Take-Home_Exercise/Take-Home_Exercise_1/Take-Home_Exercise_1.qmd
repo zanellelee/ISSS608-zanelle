@@ -28,7 +28,7 @@ Appropriate R packages will be installed and loaded for effective data processin
 |--------------------------|----------------------------------------------|
 | [tidyverse](http://tidyverse.org/packages/) | A collection of packages to do various types data analyses. |
 | [SmartEDA](https://cran.r-project.org/web/packages/SmartEDA/vignettes/SmartEDA.html) | For initial exploratory analysis describing the structure and relationships present in the data without lengthy R codes. |
-| ggdist |  |
+| [ggdist](https://mjskay.github.io/ggdist/reference/ggdist-package.html) | For visualizations of distributions and uncertainty. |
 | ggpubr |  |
 |  |  |
 |  |  |
@@ -271,31 +271,40 @@ figure
 ##### 4.1.4. Lifestyle VS Heart Attack Occurrence
 
 ::: panel-tabset
+## Smoking
+
+```{r}
+ggplot(data=binned_data, aes(x=Age_Group, color=Smoking_History, fill=Heart_Attack_Occurrence)) +
+  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
+  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
+  ylab("Percentage with Smoking History") + labs(color="Smoking_History", fill="Heart Attack Occurrences")
+```
+
 ## Physical_Activity
 
 ```{r}
-ggplot(data=binned_data, aes(x=Age_Group, fill=Physical_Activity)) +
-  geom_bar(alpha = 0.7, width= 0.8, stat="count", position="fill") +
+ggplot(data=binned_data, aes(x=Age_Group, color=Physical_Activity, fill=Heart_Attack_Occurrence)) +
+  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
   scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage of Physical Activity level") + labs(fill="Level of Physical Activity")
+  ylab("Percentage varying levels of Physical_Activity") + labs(color="Physical_Activity", fill="Heart Attack Occurrences")
 ```
 
 ## Diet_Quality
 
 ```{r}
-ggplot(data=binned_data, aes(x=Age_Group, fill=Diet_Quality)) +
-  geom_bar(alpha = 0.7, width= 0.8, stat="count", position="fill") +
+ggplot(data=binned_data, aes(x=Age_Group, color=Diet_Quality, fill=Heart_Attack_Occurrence)) +
+  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
   scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage of Diet Quality") + labs(fill="Diet Quality")
+  ylab("Percentage of varying Diet Quality") + labs(color="Diet Quality", fill="Heart Attack Occurrences")
 ```
 
 ## Alcohol_Consumption
 
 ```{r}
-ggplot(data=binned_data, aes(x=Age_Group, fill=Alcohol_Consumption)) +
-  geom_bar(alpha = 0.7, width= 0.8, stat="count", position="fill") +
+ggplot(data=binned_data, aes(x=Age_Group, color=Alcohol_Consumption, fill=Heart_Attack_Occurrence)) +
+  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
   scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage of Alcohol_Consumption") + labs(fill="Alcohol_Consumption")
+  ylab("Percentage of varying Alcohol_Consumption") + labs(color="Alcohol_Consumption", fill="Heart Attack Occurrences")
 ```
 :::
 
