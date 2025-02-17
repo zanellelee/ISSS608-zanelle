@@ -10,17 +10,17 @@ execute:
     freeze: true
 ---
 
-### 1. Overview
+## 1. Overview
 
-#### 1.1. Background
+### 1.1. Background
 
 In this exercise, Japan's heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any relationship with the variables. Insights from this analysis will be useful to act as a preventive or predictive measure.
 
-#### 1.2. Objectives
+### 1.2. Objectives
 
 Using the dataset [Heart Attack in Japan Youth vs Adult](https://www.kaggle.com/datasets/ashaychoudhary/heart-attack-in-japan-youth-vs-adult), we attempt to understand the heart attack situation in Japan and gain insights surrounding the different age groups.
 
-### 2. R packages
+## 2. R packages
 
 Appropriate R packages will be installed and loaded for effective data processing and transformation. The R packages used and its respective function will be displayed in the table below.
 
@@ -32,14 +32,16 @@ Appropriate R packages will be installed and loaded for effective data processin
 | [ggpubr](https://rpkgs.datanovia.com/ggpubr/) | For data visualizations and customising ggplot2-based publication ready plots. |
 | [ggridges](https://www.rdocumentation.org/packages/ggridges/versions/0.5.6/topics/stat_density_ridges) | For creation and customization of ridgeline plots in ggplot2. |
 | [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html) | A collection of themes and scales and for tweaking of all the non-data display. |
+| [easystats](https://easystats.github.io/easystats/) | A collection of R packages to provide framework for statistical analysis and data visualization. |
+| [gtsummary](https://www.rdocumentation.org/packages/gtsummary/versions/1.2.0/topics/tbl_regression) | Takes regression model and returns formatted table of regression model results. |
 
 ```{r}
-pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr, ggridges, ggthemes)
+pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr, ggridges, ggthemes, easystats, gtsummary)
 ```
 
-### 3. Data
+## 3. Data
 
-#### 3.1. Loading the data
+### 3.1. Loading the data
 
 The dataset is first loaded using *read_csv*.
 
@@ -47,7 +49,7 @@ The dataset is first loaded using *read_csv*.
 japan_data <- read_csv("japan_heart_attack_dataset.csv")
 ```
 
-#### 3.2. Data overview and selection
+### 3.2. Data overview and selection
 
 First, we look at the dataset to see if there are any missing or duplicated values. Using *ExpData*, there are 30,000 rows of data with no missing values nor duplicated rows. It should also be noted that there are 15 extra columns of numerical values that are meaningless as they seem to be the results of certain calculations which are not stated.
 
@@ -87,9 +89,9 @@ stats2
 ```
 :::
 
-#### 3.3. Data preparation
+### 3.3. Data preparation
 
-##### 3.3.1. Selecting desired columns
+#### 3.3.1. Selecting desired columns
 
 As there is no information on these columns of data, these will be filtered away from the dataset and leaving 17 columns in the new filtered dataset, *filtered_data*.
 
@@ -98,9 +100,9 @@ filtered_data <- select(japan_data, Age, Gender, Region, Smoking_History
 , Diabetes_History, Hypertension_History, Cholesterol_Level, Physical_Activity, Diet_Quality,	Alcohol_Consumption,	Stress_Levels,	BMI,	Heart_Rate,	Systolic_BP,	Diastolic_BP,	Family_History,	Heart_Attack_Occurrence)
 ```
 
-##### 3.3.2. Adjusting variables
+#### 3.3.2. Adjusting variables
 
-###### 3.3.2.1. Converting variables to suitable forms
+##### 3.3.2.1. Converting variables to suitable forms
 
 Some variables are ordinal in nature and are recoded to include this information. The variables affected are *Physical_Activity*, *Diet_Quality* and *Alcohol_Consumption*.
 
@@ -119,7 +121,11 @@ filtered_data <- filtered_data %>%
   mutate(Alcohol_Consumption=(recode(Alcohol_Consumption, "None"="0 None", "Low"="1 Low", "Moderate"="2 Moderate", "High"="3 High")))
 ```
 
-###### 3.3.2.2. Changing variable data types
+```{r}
+
+```
+
+##### 3.3.2.2. Changing variable data types
 
 Looking at the character rows, it is seen that they have fixed input and should be converted to factors using *mutate()* to reduce errors and improve efficiency. To check that this is done correctly, *glimpse()* is used.
 
@@ -132,9 +138,9 @@ filtered_data <- filtered_data %>%
 glimpse(filtered_data)
 ```
 
-###### 3.3.2.3. Binning *Age* into Age Groups
+##### 3.3.2.3. Binning *Age* into Age Groups
 
-To be able to gain better insights from the dataset, it was decided that *Age* should be binned into 4 separate bins - Youth, Adult, Middle-aged adult and Senior Citizen. The differences between the various age groups might be more visible than if it was kept as a continuous variable.
+To be able to gain better insights from the dataset, it was decided that *Age* should be binned into 4 separate bins - Youth, Adult, Middle-aged adult and Senior Citizen. The binned age will be stored under a new variable, *Age_Group*. The differences between the various age groups might be more visible than if it was kept as a continuous variable.
 
 ::: {.callout-tip title="Age Classification"}
 For this analysis, the age classification would be as such:
@@ -163,16 +169,16 @@ It should be noted that several columns have measurements that consist of seemin
 
 The *BMI* column consists of single digit values. However, the [World Health Organisation](https://apps.who.int/nutrition/landscape/help.aspx?menu=0&helpid=420#:~:text=BMI%20%3C17.0%3A%20moderate%20and%20severe,BMI%20%E2%89%A525.0%3A%20overweight) states that BMI values of \<17.0 indicates moderate and severe thinness in adult populations and BMI \<16.0 is known to be associated with a markedly increased risk for ill-health, poor physical performance, lethargy and even death; thus making this cut-off point to be a valid extreme limit.
 
-The [minimum systolic blood pressure and diastolic blood pressure](https://www.ncbi.nlm.nih.gov/books/NBK268/#:~:text=The%20minimum%20acceptable%20blood%20pressure,be%20great%20variation%20between%20patients.) is also stated to be 90 mm Hg systolic and 60 mm Hg diastolic while the lowest values in the dataset go as low as 56.2 mm Hg and 40.0 mm Hg (3s.f.) respectively.
+The [minimum systolic blood pressure and diastolic blood pressure](https://www.ncbi.nlm.nih.gov/books/NBK268/#:~:text=The%20minimum%20acceptable%20blood%20pressure,be%20great%20variation%20between%20patients.) is also stated to be 90 mm Hg systolic and 60 mm Hg diastolic while the lowest values in the dataset go as low as 56.2 mm Hg under *Systolic_BP* and 40.0 mm Hg (3s.f.) under *Diastolic_BP*.
 
-However, as the dataset did not clarify the units used as well as calculation methods to obtain these values. Thus, these values are not removed from the dataset but this discrepency should be taken into account.
+However, as the dataset did not clarify the units used as well as calculation methods to obtain these values. Thus, these values are not removed from the dataset but this discrepency should be taken into account and further investigation should be made to ensure these variables conform to the commonly understood version.
 :::
 
-### 4. Data exploration and analysis
+## 4. Data exploration and analysis
 
-#### 4.1. Exploratory Data Analysis
+### 4.1. Exploratory Data Analysis
 
-##### 4.1.1. Grouping similar variables
+#### 4.1.1. Grouping similar variables
 
 For more efficient analysis of the dataset, it is decided that the variables should be split to **Uncontrollable**, **Lifestyle** and **Measurements**. The way that it is split is as per follows:
 
@@ -188,7 +194,7 @@ For more efficient analysis of the dataset, it is decided that the variables sho
 
 *Age* and *Heart_Attack_Occurrences* are not included in the table above as they are considered the target variables in this data. However, if they were to be placed, they would fall under **Uncontrollable**.
 
-##### 4.1.2. Age vs Heart Attack Occurrence
+#### 4.1.2. Age vs Heart Attack Occurrence
 
 ::: {.callout-note collapse="true" title="See codes"}
 ```{r}
@@ -223,17 +229,18 @@ The percentages of heart attack occurrences in each age group can also be seen b
 #| echo: false
 percentage <- c("Youth"=Y_HA, "Adult"=A_HA, "Middle-age adult"=M_HA, "Senior Citizen"=S_HA)
 percentage
-
 ```
 
-##### 4.1.3. Uncontrollable VS Heart Attack Occurrence
+Youths are the smallest group in this dataset but have a decent group size of \>2500, reducing the likelihood of skewed data. The percentage of people with heart attack occurrences are also relatively similar throughout the different age groups, ranging around 9-10%. *Adults* have the highest percentage perhaps more can be done to investigate the factors that might be contributing to this statistic.
+
+#### 4.1.3. Uncontrollable VS Heart Attack Occurrence
 
 ::: {.callout-note collapse="true" title="See codes"}
-```{r fig.align="center", fig.width = 10}
+```{r fig.align="center", fig.width=7, fig.height=12}
 #| eval: false
 u1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
   geom_violin(alpha=0.3, position="identity") +
-  ylab("Heart Attack Occurrence") + xlab("Age") + theme(legend.text=element_text(size=8), legend.title=element_text(size=9), legend.key.size = unit(.5,'cm'))
+  ylab("Heart Attack Occurrence") + xlab("Age")
 
 u2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
   geom_violin(alpha=0.3, position="identity") +
@@ -250,11 +257,11 @@ figureu
 ```
 :::
 
-```{r fig.align="center", fig.width = 10}
+```{r fig.align="center", fig.width=7, fig.height=12}
 #| echo: false
 u1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
   geom_violin(alpha=0.3, position="identity") +
-  ylab("Heart Attack Occurrence") + xlab("Age") + theme(legend.text=element_text(size=8), legend.title=element_text(size=9), legend.key.size = unit(.5,'cm'))
+  ylab("Heart Attack Occurrence") + xlab("Age")
 
 u2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
   geom_violin(alpha=0.3, position="identity") +
@@ -270,34 +277,42 @@ figureu <- ggarrange(u1 + rremove("xlab"), u2 + rremove("xlab"), u3,
 figureu
 ```
 
-##### 4.1.4. Lifestyle VS Heart Attack Occurrence
+Looking at the violin plot, the most noticeable feature would be that across the 3 variables, there is higher heart attack occurrence amongst those who are around the age range of 30-45 years old (falling under the *Adult* age group) and this is consistent with the information that was previously obtained.
+
+Next, it is noticed that younger rural women and older urban men were more susceptible to heart attacks. This might be due to differing family duties and working practices between the people in the rural and urban areas.
+
+Interestingly, family history does not seem to significantly affect the chances of a heart attack occurrence, contrary to this [study](https://www.nejm.org/doi/full/10.1056/NEJMoa1605086) of increased risks. Little deviation is seen between the two groups.
+
+The data remain relatively constant and similar for the group that experienced no heart attack occurrences regardless of the variable being measured.
+
+#### 4.1.4. Lifestyle VS Heart Attack Occurrence
 
 ::: {.callout-note collapse="true" title="See codes"}
-```{r fig.align="center", fig.width = 22, fig.height=14}
+```{r fig.align="center", fig.width = 16, fig.height=28}
 #| eval: false
 #smoking l1
 l1 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Smoking_History)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Smoking History")
 
 #physical activity l2
 l2 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Physical_Activity)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Level of \nPhysical Activity")
 
 #diet quality l3
 l3 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Diet_Quality)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Level of \nDiet QUality")
 
 #alcohol consumption l4
 l4 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Alcohol_Consumption)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Level of \nAlcohol Consumption")
 
 #stress levels l5
 l5 <- ggplot(binned_data,
@@ -315,36 +330,36 @@ l5 <- ggplot(binned_data,
   theme_ridges()
 
 figurel <- ggarrange(l1, l2, l3, l4, l5,
-                    ncol = 2, nrow = 3)
+                    ncol = 1, nrow = 5)
 figurel
 ```
 :::
 
-```{r fig.align="center", fig.width = 22, fig.height=14}
+```{r fig.align="center", fig.width = 16, fig.height=28}
 #| echo: false
 #smoking l1
 l1 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Smoking_History)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Smoking History")
 
 #physical activity l2
 l2 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Physical_Activity)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Level of \nPhysical Activity")
 
 #diet quality l3
 l3 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Diet_Quality)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Level of \nDiet QUality")
 
 #alcohol consumption l4
 l4 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Alcohol_Consumption)) +
   geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
   scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") + labs(fill="Level of \nAlcohol Consumption")
 
 #stress levels l5
 l5 <- ggplot(binned_data,
@@ -362,8 +377,280 @@ l5 <- ggplot(binned_data,
   theme_ridges()
 
 figurel <- ggarrange(l1, l2, l3, l4, l5,
-                    ncol = 2, nrow = 3)
+                    ncol = 1, nrow = 5)
 figurel
 ```
 
-##### 4.1.5. Measurements VS Heart Attack Occurrence
+Overall, there are no distinct differences between the stacked bar plots of the group with heart attack occurrences and the group without. There are slight differences such as:
+
+**Smoking History**: The group that experienced a heart attack occurrence might have a slightly higher proportion of people with a smoking history in the *Youth* and *Middle-aged adult* age groups.
+
+**Physical Activity**: The *Middle-aged adult* age group that has experienced a heart attack seem to have a smaller proportion of people with low physical activity and a higher proportion those with high physical activity, which may seem unusual.
+
+For the ridgeline plots, the *Adult* and *Senior Citizen* age groups have visibly higher stress levels in the group that has had a heart attack. The peaks of the plots are also of higher stress levels in general, as compared to the group that did not experience a heart attack occurrence. There might be some relationship between *Stress_Levels* and *Heart_Attack_Occurrence*.
+
+#### 4.1.5. Measurements VS Heart Attack Occurrence
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r fig.align="center", fig.width=16, fig.height=32}
+#| eval: false
+#diabetes m1
+m1 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Diabetes_History)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") +
+  labs(fill="Diabetes History")
+
+#hypertension m2
+m2 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Hypertension_History)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") +
+  labs(fill="Hypertension History")
+
+#cholesterol m3
+m3 <- ggplot(binned_data,
+       aes(x = Cholesterol_Level, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Cholesterol Level") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#BMI m4
+m4 <- ggplot(binned_data,
+       aes(x = BMI, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("BMI") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#heartrate m5
+m5 <- ggplot(binned_data,
+       aes(x = Heart_Rate, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Heart Rate") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#systolicBP m6
+m6 <- ggplot(binned_data,
+       aes(x = Systolic_BP, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Systolic BP") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#diastolicBP m7
+m7 <- ggplot(binned_data,
+       aes(x = Diastolic_BP, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Diastolic BP") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+figurem <- ggarrange(m1, m2, m3, m4, m5, m6, m7,
+                    ncol = 1, nrow = 7)
+figurem
+```
+:::
+
+```{r fig.align="center", fig.width = 16, fig.height=32}
+#| echo: false
+#diabetes m1
+m1 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Diabetes_History)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") +
+  labs(fill="Diabetes History")
+
+#hypertension m2
+m2 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Hypertension_History)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab") +
+  labs(fill="Hypertension History")
+
+#cholesterol m3
+m3 <- ggplot(binned_data,
+       aes(x = Cholesterol_Level, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Cholesterol Level") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#BMI m4
+m4 <- ggplot(binned_data,
+       aes(x = BMI, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("BMI") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#heartrate m5
+m5 <- ggplot(binned_data,
+       aes(x = Heart_Rate, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Heart Rate") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#systolicBP m6
+m6 <- ggplot(binned_data,
+       aes(x = Systolic_BP, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Systolic BP") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+#diastolicBP m7
+m7 <- ggplot(binned_data,
+       aes(x = Diastolic_BP, y = Age_Group, 
+           fill = factor(stat(quantile)))) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Diastolic BP") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) + theme_ridges()
+
+figurem <- ggarrange(m1, m2, m3, m4, m5, m6, m7,
+                    ncol = 1, nrow = 7)
+figurem
+```
+
+The stacked bar plots do not show significant differences, except that there is a higher proportion of people with a history of diabetes in the *Youth* age group with a heart attack occurrence. Otherwise, the plots are relatively similar between the two groups.
+
+For the ridgeline plots, there are minor differences:
+
+**Cholesterol Level**: The group with heart attack occurrence surprisingly have lower cholesterol levels (except the \*Adult\* age group) than the group without.
+
+**BMI**: *Youth* and *Senior Citizen* in the group with heart attack occurrence might have lower BMI than their peers in the other group.
+
+The rest of the plots do not have notable differences, or the group with a heart attack occurrence might have slightly higher readings than their peers in the group that do not have heart attack occurrences.
+
+### 4.2. Regression and Correlation
+
+#### 4.2.1. One Hot Encoding
+
+As there are a few categorical data, they are converted to 0 and 1. These variables include *Gender*, *Region*, *Smoking_History*, *Diabetes_History*, *Hypertension_History*, *Family_History*, *Heart_Attack_Occurrence*. They are also converted to numeric values.
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r}
+filtered_data <- filtered_data %>% 
+  mutate(Gender=(recode(Gender, "Female"="0", "Male"="1")))
+
+filtered_data <- filtered_data %>% 
+  mutate(Region=(recode(Region, "Rural"="0", "Urban"="1")))
+
+filtered_data <- filtered_data %>% 
+  mutate(Smoking_History=(recode(Smoking_History, "No"="0", "Yes"="1")))
+
+filtered_data <- filtered_data %>% 
+  mutate(Diabetes_History=(recode(Diabetes_History, "No"="0", "Yes"="1")))
+
+filtered_data <- filtered_data %>% 
+  mutate(Hypertension_History=(recode(Hypertension_History, "No"="0", "Yes"="1")))
+
+filtered_data <- filtered_data %>% 
+  mutate(Family_History=(recode(Family_History, "No"="0", "Yes"="1")))
+
+filtered_data <- filtered_data %>% 
+  mutate(Heart_Attack_Occurrence=(recode(Heart_Attack_Occurrence, "No"="0", "Yes"="1")))
+
+cols1 <- c("Gender", "Region", "Smoking_History"
+, "Diabetes_History", "Hypertension_History", "Family_History",	"Heart_Attack_Occurrence")
+filtered_data <- filtered_data %>%
+  mutate(across(cols1, as.numeric))
+
+glimpse(filtered_data)
+```
+:::
+
+#### 4.2.2. Regression Model
+
+*glm()* is used to fit all the variables with *Heart_Attack_Occurrence* as a dependent variable.
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r}
+#| eval: false
+model <- glm(Heart_Attack_Occurrence ~ Age + Gender + Region + Smoking_History + Diabetes_History + Hypertension_History + Cholesterol_Level + Stress_Levels + BMI + Heart_Rate + Systolic_BP + Diastolic_BP + Family_History, data=filtered_data)
+
+model
+summary(model)
+tbl_regression(model, intercept=TRUE)
+```
+:::
+
+```{r}
+#| echo: false
+model <- glm(Heart_Attack_Occurrence ~ Age + Gender + Region +
+               Smoking_History + Diabetes_History + Hypertension_History +
+               Cholesterol_Level + Stress_Levels + BMI + Heart_Rate +
+               Systolic_BP + Diastolic_BP + Family_History, 
+             data=filtered_data)
+
+model
+summary(model)
+tbl_regression(model, intercept=TRUE)
+```
+
+The model only has a slightly lower Residual Deviance from the Null Deviance, accompanied by a high AIC value of 12590, indicating that the model's predictive power might be weak, and not a great model fit.
+
+Most coefficients are very close to zero, indicating that the effects are minimal. However, it is suprising to note that *Stress_Levels*, *Cholesterol_Level* and *Family_History* have negative coefficients, meaning that they slightly reduce the likelihood of a heart attack. *Age*, *Smoking_History* and *Diabetes_History* increase the risk but minimally.
+
+#### 4.2.3. Checking for collinearity
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r}
+#| eval: false
+check_collinearity(model)
+```
+:::
+
+```{r}
+#| echo: false
+check_collinearity(model)
+```
+
+Low VIF (Variance Inflation Factor) and high tolerance indicate that there are no collinearity issues and that all the independent variables are uncorrelated. However, this suggests that there are potential data issues such as sparse data or poor scaling.
+
+## 5. Summary
+
+There are no distinct variables or factors directly correlated or contributing to heart attack occurrences. The model created is also not the best fit or an accurate predictive model. It is noted that the data might require further cleaning up that led to the several unusual insights gained. More data collection and analysis could be done in the future to better understand the heart attack situation in Japan.
