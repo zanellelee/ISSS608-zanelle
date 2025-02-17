@@ -306,7 +306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="overview">1. Overview</h3>
 <section id="background" class="level4">
 <h4 class="anchored" data-anchor-id="background">1.1. Background</h4>
-<p>In this exercise, Japan’s heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any correlations. Insights from this analysis will then hopefully aid as a preventive measure.</p>
+<p>In this exercise, Japan’s heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any relationship with the variables. Insights from this analysis will be useful to act as a preventive or predictive measure.</p>
 </section>
 <section id="objectives" class="level4">
 <h4 class="anchored" data-anchor-id="objectives">1.2. Objectives</h4>
@@ -337,21 +337,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>For visualizations of distributions and uncertainty.</td>
 </tr>
 <tr class="even">
-<td>ggpubr</td>
-<td></td>
+<td><a href="https://rpkgs.datanovia.com/ggpubr/">ggpubr</a></td>
+<td>For data visualizations and customising ggplot2-based publication ready plots.</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td></td>
+<td><a href="https://www.rdocumentation.org/packages/ggridges/versions/0.5.6/topics/stat_density_ridges">ggridges</a></td>
+<td>For creation and customization of ridgeline plots in ggplot2.</td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
+<td><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">ggthemes</a></td>
+<td>A collection of themes and scales and for tweaking of all the non-data display.</td>
 </tr>
 </tbody>
 </table>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, SmartEDA, ggdist, ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, SmartEDA, ggdist, ggpubr, ggridges, ggthemes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data" class="level3">
@@ -547,17 +547,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="adjusting-variables">3.3.2. Adjusting variables</h5>
 <section id="converting-variables-to-suitable-forms" class="level6">
 <h6 class="anchored" data-anchor-id="converting-variables-to-suitable-forms">3.3.2.1. Converting variables to suitable forms</h6>
+<p>Some variables are ordinal in nature and are recoded to include this information. The variables affected are <em>Physical_Activity</em>, <em>Diet_Quality</em> and <em>Alcohol_Consumption</em>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Physical_Activity=</span>(<span class="fu">recode</span>(Physical_Activity, <span class="st">"Low"</span><span class="ot">=</span><span class="st">"1"</span>, <span class="st">"Moderate"</span><span class="ot">=</span><span class="st">"2"</span>, <span class="st">"High"</span><span class="ot">=</span><span class="st">"3"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Physical_Activity=</span>(<span class="fu">recode</span>(Physical_Activity, <span class="st">"Low"</span><span class="ot">=</span><span class="st">"1 Low"</span>, <span class="st">"Moderate"</span><span class="ot">=</span><span class="st">"2 Moderate"</span>, <span class="st">"High"</span><span class="ot">=</span><span class="st">"3 High"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Diet_Quality=</span>(<span class="fu">recode</span>(Diet_Quality, <span class="st">"Poor"</span><span class="ot">=</span><span class="st">"1"</span>, <span class="st">"Average"</span><span class="ot">=</span><span class="st">"2"</span>, <span class="st">"Good"</span><span class="ot">=</span><span class="st">"3"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Diet_Quality=</span>(<span class="fu">recode</span>(Diet_Quality, <span class="st">"Poor"</span><span class="ot">=</span><span class="st">"1 Poor"</span>, <span class="st">"Average"</span><span class="ot">=</span><span class="st">"2 Average"</span>, <span class="st">"Good"</span><span class="ot">=</span><span class="st">"3 Good"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> filtered_data <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Alcohol_Consumption=</span>(<span class="fu">recode</span>(Alcohol_Consumption, <span class="st">"None"</span><span class="ot">=</span><span class="st">"0"</span>, <span class="st">"Low"</span><span class="ot">=</span><span class="st">"1"</span>, <span class="st">"Moderate"</span><span class="ot">=</span><span class="st">"2"</span>, <span class="st">"High"</span><span class="ot">=</span><span class="st">"3"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Alcohol_Consumption=</span>(<span class="fu">recode</span>(Alcohol_Consumption, <span class="st">"None"</span><span class="ot">=</span><span class="st">"0 None"</span>, <span class="st">"Low"</span><span class="ot">=</span><span class="st">"1 Low"</span>, <span class="st">"Moderate"</span><span class="ot">=</span><span class="st">"2 Moderate"</span>, <span class="st">"High"</span><span class="ot">=</span><span class="st">"3 High"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="changing-variable-data-types" class="level6">
@@ -580,9 +581,9 @@ $ Smoking_History         &lt;fct&gt; Yes, No, Yes, No, No, No, No, Yes, No, No,
 $ Diabetes_History        &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, No, No, N…
 $ Hypertension_History    &lt;fct&gt; No, No, No, No, No, No, Yes, No, Yes, No, Yes,…
 $ Cholesterol_Level       &lt;dbl&gt; 186.4002, 185.1367, 210.6966, 211.1655, 223.81…
-$ Physical_Activity       &lt;fct&gt; 2, 1, 1, 2, 3, 1, 3, 3, 2, 2, 2, 2, 1, 1, 3, 1…
-$ Diet_Quality            &lt;fct&gt; 1, 3, 2, 3, 3, 3, 1, 1, 2, 3, 2, 1, 2, 3, 1, 3…
-$ Alcohol_Consumption     &lt;fct&gt; 1, 1, 2, 3, 3, 3, 3, 0, 2, 2, 1, 2, 1, 2, 3, 1…
+$ Physical_Activity       &lt;fct&gt; 2 Moderate, 1 Low, 1 Low, 2 Moderate, 3 High, …
+$ Diet_Quality            &lt;fct&gt; 1 Poor, 3 Good, 2 Average, 3 Good, 3 Good, 3 G…
+$ Alcohol_Consumption     &lt;fct&gt; 1 Low, 1 Low, 2 Moderate, 3 High, 3 High, 3 Hi…
 $ Stress_Levels           &lt;dbl&gt; 3.644786, 3.384056, 3.810911, 6.014878, 6.8068…
 $ BMI                     &lt;dbl&gt; 33.96135, 28.24287, 27.60121, 23.71729, 19.771…
 $ Heart_Rate              &lt;dbl&gt; 72.30153, 57.45764, 64.65870, 55.13147, 76.667…
@@ -593,11 +594,8 @@ $ Heart_Attack_Occurrence &lt;fct&gt; No, No, No, No, No, No, No, No, Yes, No, N
 </div>
 </div>
 </section>
-</section>
-<section id="converting-variables-to-suitable-forms-1" class="level5">
-<h5 class="anchored" data-anchor-id="converting-variables-to-suitable-forms-1">3.3.3. Converting variables to suitable forms</h5>
 <section id="binning-age-into-age-groups" class="level6">
-<h6 class="anchored" data-anchor-id="binning-age-into-age-groups">3.3.3.1. Binning <em>Age</em> into Age Groups</h6>
+<h6 class="anchored" data-anchor-id="binning-age-into-age-groups">3.3.2.3. Binning <em>Age</em> into Age Groups</h6>
 <p>To be able to gain better insights from the dataset, it was decided that <em>Age</em> should be binned into 4 separate bins - Youth, Adult, Middle-aged adult and Senior Citizen. The differences between the various age groups might be more visible than if it was kept as a continuous variable.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Age Classification">
 <div class="callout-header d-flex align-content-center">
@@ -652,9 +650,9 @@ $ Smoking_History         &lt;fct&gt; Yes, No, Yes, No, No, No, No, Yes, No, No,
 $ Diabetes_History        &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, No, No, N…
 $ Hypertension_History    &lt;fct&gt; No, No, No, No, No, No, Yes, No, Yes, No, Yes,…
 $ Cholesterol_Level       &lt;dbl&gt; 186.4002, 185.1367, 210.6966, 211.1655, 223.81…
-$ Physical_Activity       &lt;fct&gt; 2, 1, 1, 2, 3, 1, 3, 3, 2, 2, 2, 2, 1, 1, 3, 1…
-$ Diet_Quality            &lt;fct&gt; 1, 3, 2, 3, 3, 3, 1, 1, 2, 3, 2, 1, 2, 3, 1, 3…
-$ Alcohol_Consumption     &lt;fct&gt; 1, 1, 2, 3, 3, 3, 3, 0, 2, 2, 1, 2, 1, 2, 3, 1…
+$ Physical_Activity       &lt;fct&gt; 2 Moderate, 1 Low, 1 Low, 2 Moderate, 3 High, …
+$ Diet_Quality            &lt;fct&gt; 1 Poor, 3 Good, 2 Average, 3 Good, 3 Good, 3 G…
+$ Alcohol_Consumption     &lt;fct&gt; 1 Low, 1 Low, 2 Moderate, 3 High, 3 High, 3 Hi…
 $ Stress_Levels           &lt;dbl&gt; 3.644786, 3.384056, 3.810911, 6.014878, 6.8068…
 $ BMI                     &lt;dbl&gt; 33.96135, 28.24287, 27.60121, 23.71729, 19.771…
 $ Heart_Rate              &lt;dbl&gt; 72.30153, 57.45764, 64.65870, 55.13147, 76.667…
@@ -792,31 +790,32 @@ See codes
 </div>
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Gender)) <span class="sc">+</span></span>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>u1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Gender)) <span class="sc">+</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha=</span><span class="fl">0.3</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.text=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">8</span>), <span class="at">legend.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">9</span>), <span class="at">legend.key.size =</span> <span class="fu">unit</span>(.<span class="dv">5</span>,<span class="st">'cm'</span>))</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Region)) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>u2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Region)) <span class="sc">+</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha=</span><span class="fl">0.3</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>)</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Family_History)) <span class="sc">+</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>u3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">y=</span>Heart_Attack_Occurrence, <span class="at">x=</span>Age, <span class="at">fill=</span>Family_History)) <span class="sc">+</span></span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">alpha=</span><span class="fl">0.3</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Family History"</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>figure <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>(p1 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>), p2 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>), p3 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>),</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>figure</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Heart Attack Occurrence"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">"Family History"</span>) <span class="sc">+</span> </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.text=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">8</span>), <span class="at">legend.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">8</span>), <span class="at">legend.key.size =</span> <span class="fu">unit</span>(.<span class="dv">5</span>,<span class="st">'cm'</span>))</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>figureu <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>(u1 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>), u2 <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>), u3,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>figureu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -824,68 +823,71 @@ See codes
 </section>
 <section id="lifestyle-vs-heart-attack-occurrence" class="level5">
 <h5 class="anchored" data-anchor-id="lifestyle-vs-heart-attack-occurrence">4.1.4. Lifestyle VS Heart Attack Occurrence</h5>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Smoking</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Physical_Activity</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false">Diet_Quality</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false">Alcohol_Consumption</a></li></ul>
-<div class="tab-content">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">color=</span>Smoking_History, <span class="at">fill=</span>Heart_Attack_Occurrence)) <span class="sc">+</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage with Smoking History"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">color=</span><span class="st">"Smoking_History"</span>, <span class="at">fill=</span><span class="st">"Heart Attack Occurrences"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled" title="See codes">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+See codes
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#smoking l1</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>l1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Smoking_History)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">width=</span> <span class="fl">0.6</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Heart_Attack_Occurrence) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#physical activity l2</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>l2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Physical_Activity)) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">width=</span> <span class="fl">0.6</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span> </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Heart_Attack_Occurrence) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co">#diet quality l3</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>l3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Diet_Quality)) <span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">width=</span> <span class="fl">0.6</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span> </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Heart_Attack_Occurrence) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co">#alcohol consumption l4</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>l4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">fill=</span>Alcohol_Consumption)) <span class="sc">+</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">width=</span> <span class="fl">0.6</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span> </span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Heart_Attack_Occurrence) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"xlab"</span>) <span class="sc">+</span> <span class="fu">rremove</span>(<span class="st">"ylab"</span>)</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="co">#stress levels l5</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>l5 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(binned_data,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Stress_Levels, </span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Age_Group, </span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="fu">factor</span>(<span class="fu">stat</span>(quantile))</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>           )) <span class="sc">+</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_density_ridges</span>(</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">geom =</span> <span class="st">"density_ridges_gradient"</span>,</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">calc_ecdf =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">quantiles =</span> <span class="dv">4</span>,</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">quantile_lines =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">name =</span> <span class="st">"Quartiles"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Stress Levels"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Heart_Attack_Occurrence) <span class="sc">+</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_ridges</span>()</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>figurel <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>(l1, l2, l3, l4, l5,</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>figurel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2112"></p>
 </figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">color=</span>Physical_Activity, <span class="at">fill=</span>Heart_Attack_Occurrence)) <span class="sc">+</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage varying levels of Physical_Activity"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">color=</span><span class="st">"Physical_Activity"</span>, <span class="at">fill=</span><span class="st">"Heart Attack Occurrences"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">color=</span>Diet_Quality, <span class="at">fill=</span>Heart_Attack_Occurrence)) <span class="sc">+</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage of varying Diet Quality"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">color=</span><span class="st">"Diet Quality"</span>, <span class="at">fill=</span><span class="st">"Heart Attack Occurrences"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>binned_data, <span class="fu">aes</span>(<span class="at">x=</span>Age_Group, <span class="at">color=</span>Alcohol_Consumption, <span class="at">fill=</span>Heart_Attack_Occurrence)) <span class="sc">+</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width=</span> <span class="fl">0.8</span>, <span class="at">stat=</span><span class="st">"count"</span>, <span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Percentage of varying Alcohol_Consumption"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">color=</span><span class="st">"Alcohol_Consumption"</span>, <span class="at">fill=</span><span class="st">"Heart Attack Occurrences"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-Home_Exercise_1_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>

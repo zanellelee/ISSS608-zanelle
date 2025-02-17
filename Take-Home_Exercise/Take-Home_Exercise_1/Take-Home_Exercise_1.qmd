@@ -14,7 +14,7 @@ execute:
 
 #### 1.1. Background
 
-In this exercise, Japan's heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any correlations. Insights from this analysis will then hopefully aid as a preventive measure.
+In this exercise, Japan's heart attack occurrences are studied alongside with several possible contributing factors. Increasing numbers of heart attacks over the years make it crucial to study the situation surrounding these occurrences, and find out if there are any relationship with the variables. Insights from this analysis will be useful to act as a preventive or predictive measure.
 
 #### 1.2. Objectives
 
@@ -29,12 +29,12 @@ Appropriate R packages will be installed and loaded for effective data processin
 | [tidyverse](http://tidyverse.org/packages/) | A collection of packages to do various types data analyses. |
 | [SmartEDA](https://cran.r-project.org/web/packages/SmartEDA/vignettes/SmartEDA.html) | For initial exploratory analysis describing the structure and relationships present in the data without lengthy R codes. |
 | [ggdist](https://mjskay.github.io/ggdist/reference/ggdist-package.html) | For visualizations of distributions and uncertainty. |
-| ggpubr |  |
-|  |  |
-|  |  |
+| [ggpubr](https://rpkgs.datanovia.com/ggpubr/) | For data visualizations and customising ggplot2-based publication ready plots. |
+| [ggridges](https://www.rdocumentation.org/packages/ggridges/versions/0.5.6/topics/stat_density_ridges) | For creation and customization of ridgeline plots in ggplot2. |
+| [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html) | A collection of themes and scales and for tweaking of all the non-data display. |
 
 ```{r}
-pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr)
+pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr, ggridges, ggthemes)
 ```
 
 ### 3. Data
@@ -102,19 +102,21 @@ filtered_data <- select(japan_data, Age, Gender, Region, Smoking_History
 
 ###### 3.3.2.1. Converting variables to suitable forms
 
+Some variables are ordinal in nature and are recoded to include this information. The variables affected are *Physical_Activity*, *Diet_Quality* and *Alcohol_Consumption*.
+
 ```{r}
 filtered_data <- filtered_data %>% 
-  mutate(Physical_Activity=(recode(Physical_Activity, "Low"="1", "Moderate"="2", "High"="3")))
+  mutate(Physical_Activity=(recode(Physical_Activity, "Low"="1 Low", "Moderate"="2 Moderate", "High"="3 High")))
 ```
 
 ```{r}
 filtered_data <- filtered_data %>% 
-  mutate(Diet_Quality=(recode(Diet_Quality, "Poor"="1", "Average"="2", "Good"="3")))
+  mutate(Diet_Quality=(recode(Diet_Quality, "Poor"="1 Poor", "Average"="2 Average", "Good"="3 Good")))
 ```
 
 ```{r}
 filtered_data <- filtered_data %>% 
-  mutate(Alcohol_Consumption=(recode(Alcohol_Consumption, "None"="0", "Low"="1", "Moderate"="2", "High"="3")))
+  mutate(Alcohol_Consumption=(recode(Alcohol_Consumption, "None"="0 None", "Low"="1 Low", "Moderate"="2 Moderate", "High"="3 High")))
 ```
 
 ###### 3.3.2.2. Changing variable data types
@@ -130,9 +132,7 @@ filtered_data <- filtered_data %>%
 glimpse(filtered_data)
 ```
 
-##### 3.3.3. Converting variables to suitable forms
-
-###### 3.3.3.1. Binning *Age* into Age Groups
+###### 3.3.2.3. Binning *Age* into Age Groups
 
 To be able to gain better insights from the dataset, it was decided that *Age* should be binned into 4 separate bins - Youth, Adult, Middle-aged adult and Senior Citizen. The differences between the various age groups might be more visible than if it was kept as a continuous variable.
 
@@ -229,83 +229,141 @@ percentage
 ##### 4.1.3. Uncontrollable VS Heart Attack Occurrence
 
 ::: {.callout-note collapse="true" title="See codes"}
-```{r}
+```{r fig.align="center", fig.width = 10}
 #| eval: false
-p1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
+u1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age") + theme(legend.text=element_text(size=8), legend.title=element_text(size=9), legend.key.size = unit(.5,'cm'))
+
+u2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
   geom_violin(alpha=0.3, position="identity") +
   ylab("Heart Attack Occurrence") + xlab("Age")
 
-p2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
+u3 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Family_History)) +
   geom_violin(alpha=0.3, position="identity") +
-  ylab("Heart Attack Occurrence") + xlab("Age")
+  ylab("Heart Attack Occurrence") + xlab("Age") + labs(fill="Family History") + 
+  theme(legend.text=element_text(size=8), legend.title=element_text(size=8), legend.key.size = unit(.5,'cm'))
 
-p3 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Family_History)) +
-  geom_violin(alpha=0.3, position="identity") +
-  ylab("Heart Attack Occurrence") + xlab("Age") + labs(fill="Family History")
-
-figure <- ggarrange(p1 + rremove("ylab") + rremove("xlab"), p2 + rremove("xlab"), p3 + rremove("ylab"),
+figureu <- ggarrange(u1 + rremove("xlab"), u2 + rremove("xlab"), u3,
                     ncol = 1, nrow = 3)
-figure
+figureu
 ```
 :::
 
-```{r}
+```{r fig.align="center", fig.width = 10}
 #| echo: false
-p1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
+u1 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Gender)) +
+  geom_violin(alpha=0.3, position="identity") +
+  ylab("Heart Attack Occurrence") + xlab("Age") + theme(legend.text=element_text(size=8), legend.title=element_text(size=9), legend.key.size = unit(.5,'cm'))
+
+u2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
   geom_violin(alpha=0.3, position="identity") +
   ylab("Heart Attack Occurrence") + xlab("Age")
 
-p2 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Region)) +
+u3 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Family_History)) +
   geom_violin(alpha=0.3, position="identity") +
-  ylab("Heart Attack Occurrence") + xlab("Age")
+  ylab("Heart Attack Occurrence") + xlab("Age") + labs(fill="Family History") + 
+  theme(legend.text=element_text(size=8), legend.title=element_text(size=8), legend.key.size = unit(.5,'cm'))
 
-p3 <- ggplot(data=binned_data, aes(y=Heart_Attack_Occurrence, x=Age, fill=Family_History)) +
-  geom_violin(alpha=0.3, position="identity") +
-  ylab("Heart Attack Occurrence") + xlab("Age") + labs(fill="Family History")
-
-figure <- ggarrange(p1 + rremove("ylab") + rremove("xlab"), p2 + rremove("xlab"), p3 + rremove("ylab"),
+figureu <- ggarrange(u1 + rremove("xlab"), u2 + rremove("xlab"), u3,
                     ncol = 1, nrow = 3)
-figure
+figureu
 ```
 
 ##### 4.1.4. Lifestyle VS Heart Attack Occurrence
 
-::: panel-tabset
-## Smoking
+::: {.callout-note collapse="true" title="See codes"}
+```{r fig.align="center", fig.width = 22, fig.height=14}
+#| eval: false
+#smoking l1
+l1 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Smoking_History)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
 
-```{r}
-ggplot(data=binned_data, aes(x=Age_Group, color=Smoking_History, fill=Heart_Attack_Occurrence)) +
-  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
-  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage with Smoking History") + labs(color="Smoking_History", fill="Heart Attack Occurrences")
-```
+#physical activity l2
+l2 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Physical_Activity)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
 
-## Physical_Activity
+#diet quality l3
+l3 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Diet_Quality)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
 
-```{r}
-ggplot(data=binned_data, aes(x=Age_Group, color=Physical_Activity, fill=Heart_Attack_Occurrence)) +
-  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
-  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage varying levels of Physical_Activity") + labs(color="Physical_Activity", fill="Heart Attack Occurrences")
-```
+#alcohol consumption l4
+l4 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Alcohol_Consumption)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
 
-## Diet_Quality
+#stress levels l5
+l5 <- ggplot(binned_data,
+       aes(x = Stress_Levels, 
+           y = Age_Group, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Stress Levels") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) +
+  theme_ridges()
 
-```{r}
-ggplot(data=binned_data, aes(x=Age_Group, color=Diet_Quality, fill=Heart_Attack_Occurrence)) +
-  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
-  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage of varying Diet Quality") + labs(color="Diet Quality", fill="Heart Attack Occurrences")
-```
-
-## Alcohol_Consumption
-
-```{r}
-ggplot(data=binned_data, aes(x=Age_Group, color=Alcohol_Consumption, fill=Heart_Attack_Occurrence)) +
-  geom_bar(alpha = 0.2, width= 0.8, stat="count", position="fill") +
-  scale_y_continuous(labels = scales::percent) + xlab("Age Group") + 
-  ylab("Percentage of varying Alcohol_Consumption") + labs(color="Alcohol_Consumption", fill="Heart Attack Occurrences")
+figurel <- ggarrange(l1, l2, l3, l4, l5,
+                    ncol = 2, nrow = 3)
+figurel
 ```
 :::
+
+```{r fig.align="center", fig.width = 22, fig.height=14}
+#| echo: false
+#smoking l1
+l1 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Smoking_History)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+
+#physical activity l2
+l2 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Physical_Activity)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+
+#diet quality l3
+l3 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Diet_Quality)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+
+#alcohol consumption l4
+l4 <- ggplot(data=binned_data, aes(x=Age_Group, fill=Alcohol_Consumption)) +
+  geom_bar(alpha = 0.6, width= 0.6, stat="count", position="fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Heart_Attack_Occurrence) + rremove("xlab") + rremove("ylab")
+
+#stress levels l5
+l5 <- ggplot(binned_data,
+       aes(x = Stress_Levels, 
+           y = Age_Group, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") + xlab("Stress Levels") + ylab("Age Group") +
+  facet_wrap(~Heart_Attack_Occurrence) +
+  theme_ridges()
+
+figurel <- ggarrange(l1, l2, l3, l4, l5,
+                    ncol = 2, nrow = 3)
+figurel
+```
 
 ##### 4.1.5. Measurements VS Heart Attack Occurrence
