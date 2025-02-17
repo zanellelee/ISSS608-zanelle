@@ -25,7 +25,7 @@ Using the dataset [Heart Attack in Japan Youth vs Adult](https://www.kaggle.com/
 Appropriate R packages will be installed and loaded for effective data processing and transformation. The R packages used and its respective function will be displayed in the table below.
 
 | R Package | Function |
-|--------------------------|----------------------------------------------|
+|----|----|
 | [tidyverse](http://tidyverse.org/packages/) | A collection of packages to do various types data analyses. |
 | [SmartEDA](https://cran.r-project.org/web/packages/SmartEDA/vignettes/SmartEDA.html) | For initial exploratory analysis describing the structure and relationships present in the data without lengthy R codes. |
 | [ggdist](https://mjskay.github.io/ggdist/reference/ggdist-package.html) | For visualizations of distributions and uncertainty. |
@@ -34,9 +34,10 @@ Appropriate R packages will be installed and loaded for effective data processin
 | [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html) | A collection of themes and scales and for tweaking of all the non-data display. |
 | [easystats](https://easystats.github.io/easystats/) | A collection of R packages to provide framework for statistical analysis and data visualization. |
 | [gtsummary](https://www.rdocumentation.org/packages/gtsummary/versions/1.2.0/topics/tbl_regression) | Takes regression model and returns formatted table of regression model results. |
+| [ggstatsplot](https://indrajeetpatil.github.io/ggstatsplot/) | An extension of ggplot2 for creating graphics with details from statistical tests. |
 
 ```{r}
-pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr, ggridges, ggthemes, easystats, gtsummary)
+pacman::p_load(tidyverse, SmartEDA, ggdist, ggpubr, ggridges, ggthemes, easystats, gtsummary, ggstatsplot)
 ```
 
 ## 3. Data
@@ -559,7 +560,7 @@ The stacked bar plots do not show significant differences, except that there is 
 
 For the ridgeline plots, there are minor differences:
 
-**Cholesterol Level**: The group with heart attack occurrence surprisingly have lower cholesterol levels (except the \*Adult\* age group) than the group without.
+**Cholesterol Level**: The group with heart attack occurrence surprisingly have lower cholesterol levels (except the *Adult* age group) than the group without.
 
 **BMI**: *Youth* and *Senior Citizen* in the group with heart attack occurrence might have lower BMI than their peers in the other group.
 
@@ -650,6 +651,18 @@ check_collinearity(model)
 ```
 
 Low VIF (Variance Inflation Factor) and high tolerance indicate that there are no collinearity issues and that all the independent variables are uncorrelated. However, this suggests that there are potential data issues such as sparse data or poor scaling.
+
+::: {.callout-note collapse="true" title="See codes"}
+```{r}
+#| eval: false
+ggcoefstats(model, output = "plot")
+```
+:::
+
+```{r}
+#| echo: false
+ggcoefstats(model, output = "plot")
+```
 
 ## 5. Summary
 
