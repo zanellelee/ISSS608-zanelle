@@ -58,6 +58,9 @@ website:
         text: "4. Boxplot"
       - href: "In-Class_Exercise/In-Class_Ex05/In-Class_Exercise_5a.html"
         text: "5a. Visual Analytics for Building Better Explanatory Models"
+      - href: https://zanellelee.shinyapps.io/In-Class_Exercise_6/
+        text: "6. Building a basic output (Shiny)"
+      
     
     - text: "Take-Home Exercise"
       menu:
