@@ -39,6 +39,8 @@ website:
         text: "5d. Visual Multivariate Analysis with Parallel Coordinates Plot"
       - href: "Hands-On_Exercise/Hands-On_Exercise_05e.html"
         text: "5e. Treemap Visualisation with R"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_7.html"
+        text: "7. Visualising and Analysing Time-oriented Data"
       
         
         
