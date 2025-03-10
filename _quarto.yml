@@ -62,6 +62,8 @@ website:
         text: "5a. Visual Analytics for Building Better Explanatory Models"
       - href: https://zanellelee.shinyapps.io/In-Class_Exercise_6/
         text: "6. Building a basic output (Shiny)"
+      - href: "In-Class_Exercise/In-Class_Ex07/In-Class_Exercise_7.html"
+        text: "7. Time Series Data Sampling"
       
     
     - text: "Take-Home Exercise"
@@ -69,7 +71,9 @@ website:
         - href: "Take-Home_Exercise/Take-Home_Exercise_1/Take-Home_Exercise_1.html"
           text: "1. Heart Attack in Japan - Youth vs Adult"
 
-format:
+
+
+format: 
   html:
     theme:
       - journal
