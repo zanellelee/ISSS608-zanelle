@@ -70,6 +70,8 @@ website:
       menu:
         - href: "Take-Home_Exercise/Take-Home_Exercise_1/Take-Home_Exercise_1.html"
           text: "1. Heart Attack in Japan - Youth vs Adult"
+        - href: "Take-Home_Exercise/Take-Home_Exercise_2/Take-Home_Exercise_2.html"
+          text: "2. Singapore International Trade"
 
 
 
