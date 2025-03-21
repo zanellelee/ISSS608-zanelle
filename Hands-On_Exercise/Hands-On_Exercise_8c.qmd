@@ -1,0 +1,90 @@
+---
+title: "Hands-On Exercise 8c (Analytical Mapping)"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+### 1. Overview
+
+In this in-class exercise, you will gain hands-on experience on using appropriate R methods to plot analytical maps.
+
+By the end of this in-class exercise, you will be able to use appropriate functions of tmap and tidyverse to perform the following tasks:
+
+-   Importing geospatial data in rds format into R environment.
+
+-   Creating cartographic quality choropleth maps by using appropriate tmap functions.
+
+-   Creating rate map
+
+-   Creating percentile map
+
+-   Creating boxmap
+
+```{r}
+pacman::p_load(tmap, tidyverse, sf)
+```
+
+### 2. Data
+
+For the purpose of this hands-on exercise, a prepared data set called *NGA_wp.rds* will be used. The data set is a polygon feature data.frame providing information on water point of Nigeria at the LGA level.
+
+```{r}
+NGA_wp <- read_rds("Data files/rds/NGA_wp.rds")
+```
+
+### 3. Basic Choropleth Mapping
+
+#### 3.1. Visualising distribution of non-functional water point
+
+p1
+
+```{r}
+p1 <- tm_shape(NGA_wp) +
+  tm_fill("wp_functional",
+          n = 10,
+          style = "equal",
+          palette = "Blues") +
+  tm_borders(lwd = 0.1,
+             alpha = 1) +
+  tm_layout(main.title = "Distribution of functional water point by LGAs",
+            legend.outside = FALSE)
+```
+
+p2
+
+```{r}
+p2 <- tm_shape(NGA_wp) +
+  tm_fill("total_wp",
+          n = 10,
+          style = "equal",
+          palette = "Blues") +
+  tm_borders(lwd = 0.1,
+             alpha = 1) +
+  tm_layout(main.title = "Distribution of total  water point by LGAs",
+            legend.outside = FALSE)
+```
+
+Putting the plots together:
+
+```{r}
+tmap_arrange(p2, p1, nrow = 1)
+```
+
+#### 3.2. Choropleth Map for Rates
+
+In much of our readings we have now seen the importance to map rates rather than counts of things, and that is for the simple reason that water points are not equally distributed in space. That means that if we do not account for how many water points are somewhere, we end up mapping total water point size rather than our topic of interest.
+
+We will tabulate the proportion of functional water points and the proportion of non-functional water points in each LGA. In the following code chunk, *mutate()* from **dplyr** package is used to derive two fields, namely *pct_functional* and *pct_nonfunctional*.
+
+```{r}
+NGA_wp <- NGA_wp %>%
+  mutate(pct_functional = wp_functional/total_wp) %>%
+  mutate(pct_nonfunctional = wp_nonfunctional/total_wp)
+```
+
+Reference: <https://r4va.netlify.app/chap23>
