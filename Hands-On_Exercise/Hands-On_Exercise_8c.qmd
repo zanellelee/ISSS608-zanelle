@@ -34,7 +34,7 @@ pacman::p_load(tmap, tidyverse, sf)
 For the purpose of this hands-on exercise, a prepared data set called *NGA_wp.rds* will be used. The data set is a polygon feature data.frame providing information on water point of Nigeria at the LGA level.
 
 ```{r}
-NGA_wp <- read_rds("Data files/NGA_wp.rds")
+NGA_wp <- read_rds("Data files/rds/NGA_wp.rds")
 ```
 
 ### 3. Basic Choropleth Mapping

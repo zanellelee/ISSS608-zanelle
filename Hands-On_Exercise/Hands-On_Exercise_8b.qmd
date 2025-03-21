@@ -38,7 +38,7 @@ Figure below shows the first 15 records of SGPools_svy21.csv. It consists of sev
 The code chunk below uses *read_csv()* function of **readr** package to import *SGPools_svy21.csv* into R as a tibble data frame called *sgpools*.
 
 ```{r}
-sgpools <- read_csv("Data files/SGPools_svy21.csv")
+sgpools <- read_csv("Data files/aspatial/SGPools_svy21.csv")
 ```
 
 After importing the data file into R, it is important for us to examine if the data file has been imported correctly.
