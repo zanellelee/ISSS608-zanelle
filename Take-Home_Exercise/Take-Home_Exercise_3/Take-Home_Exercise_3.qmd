@@ -1,0 +1,107 @@
+---
+title: "Take-Home Exercise 3"
+author: "Zanelle Lee Wenfang"
+date-modified: "last-modified"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+# Dengue in Taiwan
+
+## 1. Overview
+
+## 2. Loading R packages and data
+
+First, we load the appropriate R packages that are necessary for the exploration of the dataset, as well as for its analysis and time series usage. In this segment, we will be loading **tidyverse**, **plotly** and **lubridate**.
+
+```{r}
+pacman::p_load(tidyverse, plotly, lubridate)
+```
+
+The dataset is loaded into *dengue_daily*, and *summary()* is used to get a rough idea on the dataset and its variables.
+
+```{r}
+dengue_daily <- read_csv("Dengue_Daily.csv")
+summary(dengue_daily)
+```
+
+As this is a Taiwan dataset, it is not surprising that most of the data is recorded in Mandarin. For easier referencing and usage of the dataset, the column names are translated to English.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show Code for columns translation"
+
+colnames(dengue_daily) <- c("Onset_Date", "Case_Classification_Date", "Reporting_Date", "Gender", 
+                  "Age_Group", "Residential_County_City", "Residential_Town_District", 
+                  "Residential_Village", "Smallest_Statistical_Area", "X_coord", 
+                  "Y_coord", "Primary_Statistical_Area", "Secondary_Statistical_Area",
+                  "Infection_County_City", "Infection_Town_District", "Infection_Village",
+                  "Imported_Case", "Infection_Country", "Confirmed_Cases", 
+                  "Residential_Village_Code", "Infection_Village_Code", "Serotype", 
+                  "MOI_Residential_County_Code", "MOI_Residential_Town_Code", 
+                  "MOI_Infection_County_Code", "MOI_Infection_Town_Code")
+```
+
+checking confirmed cases
+
+```{r}
+dengue_daily %>% filter(Confirmed_Cases != 1)
+```
+
+converting rows with confirmed cases != 1
+
+```{r}
+dengue_daily <- dengue_daily %>%
+  rowwise() %>%   
+  mutate(Confirmed_Cases = list(rep(1, Confirmed_Cases))) %>%   
+  unnest(Confirmed_Cases)  
+```
+
+removing columns including infection country (since imported case) and confirmed cases (since alr filtered)
+
+```{r}
+dengue_daily <- dengue_daily[, -c(2, 8, 14, 15, 16, 18, 19, 20, 21, 25, 26)]
+```
+
+translate variables and arranging age group
+
+```{r}
+dengue_daily <- dengue_daily %>%
+  mutate(Residential_County_City = recode(Residential_County_City,
+                                      "屏東縣" = "Pingtung County",
+                                      "宜蘭縣" = "Yilan County",
+                                      "高雄市" = "Kaohsiung City",
+                                      "桃園市" = "Taoyuan City",
+                                      "新北市" = "New Taipei City",
+                                      "台北市" = "Taipei City",
+                                      "台南市" = "Tainan City",
+                                      "新竹縣" = "Hsinchu County",
+                                      "南投縣" = "Nantou County",
+                                      "台中市" = "Taichung City",
+                                      "新竹市" = "Hsinchu City",
+                                      "雲林縣" = "Yunlin County",
+                                      "彰化縣" = "Changhua County",
+                                      "花蓮縣" = "Hualien County",
+                                      "台東縣" = "Taitung County",
+                                      "嘉義縣" = "Chiayi County",
+                                      "嘉義市" = "Chiayi City",
+                                      "基隆市" = "Keelung City",
+                                      "苗栗縣" = "Miaoli County",
+                                      "澎湖縣" = "Penghu County",
+                                      "連江縣" = "Lianjiang County",
+                                      "金門縣" = "Kinmen County"),
+Imported_Case = recode(Imported_Case, "是" = "Yes", 
+                       "否" = "No"),
+Serotype = recode(Serotype, "第一型" = "Type 1",
+                  "第二型" = "Type 2",
+                  "第三型" = "Type 3",
+                  "第四型" = "Type 4"),
+Age_Group = ifelse(Age_Group %in% c("0", "1", "2", "3", "4"), "0-4", Age_Group),
+         Age_Group = factor(Age_Group, levels = c("0-4", "5-9", 
+                                                  sort(unique(Age_Group[
+                                                      Age_Group != "0-4" & Age_Group != "5-9"]
+                                                      )))))
+```

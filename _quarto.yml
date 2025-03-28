@@ -49,6 +49,8 @@ website:
         text: "8c. Analytical Mapping"
       - href: "Hands-On_Exercise/Hands-On_Exercise_9.html"
         text: "9. Modelling, Visualising and Analysing Network Data with R"
+      - href: "Hands-On_Exercise/Hands-On_Exercise_10.html"
+        text: "10. Information Dashboard Design: R methods"
       
         
         
