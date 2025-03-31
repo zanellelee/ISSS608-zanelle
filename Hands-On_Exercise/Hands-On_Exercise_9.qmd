@@ -253,7 +253,7 @@ g + theme_graph(background = 'grey10',
 
 ![](images/clipboard-2852427744.png)
 
-#### 3.5.  **Fruchterman and Reingold layout**
+#### 3.5. **Fruchterman and Reingold layout**
 
 ```{r}
 g <- ggraph(GAStech_graph, 
