@@ -367,7 +367,11 @@ dengue_daily %>%
 Before starting on model comparison, we must first decide on the types of model we want to include in our comparison. Here is a quick summary of the curves that will be fitted.
 
 ```{r}
-model_comparison <- tibble::tibble(
+#| code-fold: true
+#| code-summary: "Show Code for model summaries"
+
+
+table_data <- tibble(
   Model = c("Poisson", "Negative Binomial", "Exponential", "GAM", "Polynomial", "Lognormal", "Gamma"),
   `Best For` = c(
     "Count data with equal mean/variance",
@@ -378,9 +382,9 @@ model_comparison <- tibble::tibble(
     "Cumulative or right-skewed data",
     "Skewed continuous outcome (e.g., duration)"
   ),
-  `Overdispersion` = c("No", "Yes", "No", "Yes", "No", "Yes", "Yes"),
-  `Flexibility` = c("Low", "Moderate", "Low", "Very High", "High", "Moderate", "Moderate"),
-  `Interpretability` = c("High", "High", "High", "Moderate", "Low", "Low", "Low"),
+  Overdispersion = c("No", "Yes", "No", "Yes", "No", "Yes", "Yes"),
+  Flexibility = c("Low", "Moderate", "Low", "Very High", "High", "Moderate", "Moderate"),
+  Interpretability = c("High", "High", "High", "Moderate", "Low", "Low", "Low"),
   `Overfitting Risk` = c("Low", "Medium", "Low", "High", "High", "Medium", "Medium"),
   Remarks = c(
     "Fails with overdispersion",
@@ -394,32 +398,37 @@ model_comparison <- tibble::tibble(
 )
 
 
-gt_table <- model_comparison %>%
+
+color_overdispersion <- function(x) ifelse(x == "Yes", "lightgreen", "tomato")
+color_flexibility <- function(x) case_when(
+  x == "Low" ~ "#f4cccc",
+  x == "Moderate" ~ "#fce5cd",
+  x == "High" ~ "#d9ead3",
+  x == "Very High" ~ "#b6d7a8",
+  TRUE ~ NA_character_
+)
+color_interpretability <- function(x) case_when(
+  x == "Low" ~ "#f4cccc",
+  x == "Moderate" ~ "#fff2cc",
+  x == "High" ~ "#b6d7a8",
+  TRUE ~ NA_character_
+)
+color_overfitting <- function(x) case_when(
+  x == "Low" ~ "#b6d7a8",
+  x == "Medium" ~ "#ffe599",
+  x == "High" ~ "#f4cccc",
+  TRUE ~ NA_character_
+)
+
+
+
+table_data %>%
   gt() %>%
-  tab_header(
-    title = "Comparison of Curve Fitting Models"
-  ) %>%
-  data_color(
-    columns = vars(`Overdispersion`),
-    colors = scales::col_factor(
-      palette = c("No" = "tomato", "Yes" = "lightgreen"),
-      domain = c("No", "Yes")
-    )
-  ) %>%
-  data_color(
-    columns = vars(Flexibility),
-    colors = scales::col_factor(
-      palette = c("Low" = "#f4cccc", "Moderate" = "#fce5cd", "High" = "#d9ead3", "Very High" = "#b6d7a8"),
-      domain = c("Low", "Moderate", "High", "Very High")
-    )
-  ) %>%
-  data_color(
-    columns = vars(`Overfitting Risk`),
-    colors = scales::col_factor(
-      palette = c("Low" = "#b6d7a8", "Medium" = "#ffe599", "High" = "#f4cccc"),
-      domain = c("Low", "Medium", "High")
-    )
-  )
+  tab_header(title = "Comparison of Curve Fitting Models") %>%
+  data_color(columns = c(Overdispersion), fn = color_overdispersion) %>%
+  data_color(columns = c(Flexibility), fn = color_flexibility) %>%
+  data_color(columns = c(Interpretability), fn = color_interpretability) %>%
+  data_color(columns = c(`Overfitting Risk`), fn = color_overfitting)
 
 ```
 
@@ -437,6 +446,8 @@ wave1 <- wave1 %>%
 ### 4.1.1. Model Comparison
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for different models"
 # Poisson model
 poisson_model1 <- glm(cases ~ week_index, family = "poisson", data = wave1)
 
@@ -459,9 +470,11 @@ lognormal_model1 <- glm(log(cases + 1) ~ week_index, family = gaussian(), data =
 gamma_model1 <- glm(cases ~ week_index, family = Gamma(link = "log"), data = wave1)
 ```
 
-fitted all curves
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for fitted curves"
+
+
 # Preparation
 wave1 <- wave1 %>%
   mutate(
@@ -495,9 +508,12 @@ ggplot(wave1, aes(x = week_index)) +
   theme_minimal()
 ```
 
-poly
+To ensure a better fit for the Polynomial Model, we run the model through different degrees of freedom and get the AIC of each plot, before choosing the best degree that will give us reasonably good AIC results without excessively increasing the degree of freedom.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code to check AIC of Polynomial Model by varying degree of freedom"
+
 degrees1 <- 1:10
 aic_values1 <- numeric(length(degrees1))
 models1 <- list()
@@ -512,11 +528,16 @@ aic_df1 <- data.frame(
   Degree1 = degrees1,
   AIC1 = aic_values1
 )
+
+print(aic_df1)
 ```
 
-change to 3rd degree and replot
+The degree of freedom is then changed before plotting the Polynomial Model again. We should now see that it is a better fit to the dataset.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code on replotting Polynomial Model"
+
 # Changing to fit 3rd-degree polynomial Poisson regression
 poly_model1 <- glm(cases ~ poly(week_index, 6), family = poisson(), data = wave1)
 
@@ -548,17 +569,23 @@ ggplot(wave1, aes(x = week_index)) +
 
 #### 4.1.1.1. Akaike Information Criterion (AIC)
 
-AIC
+We then compare the AIC values of all the models.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for all models' AIC values"
+
 AIC(poisson_model1, nb_model1, exp_model1, poly_model1, gam_model1, lognormal_model1, gamma_model1)
 ```
 
 #### 4.1.1.2. Residuals
 
-residuals
+We also look at the residuals for the different models to check on the fitting of the different models.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for all models' residuals"
+
 # Obtaining residuals
 wave1 <- wave1 %>%   mutate(
   resid_poisson = residuals(poisson_model1, type = "response"),     
@@ -599,9 +626,12 @@ ggplot(resid_long1, aes(x = week_index, y = residual, color = model)) +   geom_h
 
 #### 4.1.1.3. Root Mean Squared Error (RMSE)
 
-RMSE lower is better
+The Root Mean Squared Error (RMSE) is also calculated to know the variation of the fitted curves from the actual data.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for all models' RMSE values"
+
 rmse_summary1 <- wave1 %>%    
   summarise(          
     Poisson = sqrt(mean(resid_poisson^2)),          
@@ -1643,8 +1673,8 @@ ggplot(fit_metrics123, aes(x = Model, y = RMSE, fill = Wave)) +
 
 ## 6.1. EDA
 
-![](images/clipboard-2000178618.png){width="651"}
+![](images/clipboard-4149753404.png){fig-align="center" width="472"}
 
 ## 6.2. Time Series Curve Fitting
 
-![](images/clipboard-4047672289.png)
+![](images/clipboard-3764983910.png){fig-align="center"}
