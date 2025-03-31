@@ -21,7 +21,7 @@ First, we load the appropriate R packages that are necessary for the exploration
 #| code-fold: true
 #| code-summary: "Show Code for loading R packages"
 
-pacman::p_load(tidyverse, plotly, MASS, mgcv, Metrics)
+pacman::p_load(tidyverse, plotly, MASS, mgcv, Metrics, gt)
 ```
 
 The dataset is loaded into *dengue_daily*, and *summary()* is used to get a rough idea on the dataset and its variables.
@@ -364,19 +364,77 @@ dengue_daily %>%
 
 # 4. Week-based Curve Fitting
 
-## 4.1. Outbreak Year 2014
-
-week index
+Before starting on model comparison, we must first decide on the types of model we want to include in our comparison. Here is a quick summary of the curves that will be fitted.
 
 ```{r}
+model_comparison <- tibble::tibble(
+  Model = c("Poisson", "Negative Binomial", "Exponential", "GAM", "Polynomial", "Lognormal", "Gamma"),
+  `Best For` = c(
+    "Count data with equal mean/variance",
+    "Overdispersed count data",
+    "Early outbreak exponential growth",
+    "Complex trends and multi-peak waves",
+    "Epidemic waves (with right degree)",
+    "Cumulative or right-skewed data",
+    "Skewed continuous outcome (e.g., duration)"
+  ),
+  `Overdispersion` = c("No", "Yes", "No", "Yes", "No", "Yes", "Yes"),
+  `Flexibility` = c("Low", "Moderate", "Low", "Very High", "High", "Moderate", "Moderate"),
+  `Interpretability` = c("High", "High", "High", "Moderate", "Low", "Low", "Low"),
+  `Overfitting Risk` = c("Low", "Medium", "Low", "High", "High", "Medium", "Medium"),
+  Remarks = c(
+    "Fails with overdispersion",
+    "Good for noisy data",
+    "Fits only early phase",
+    "Flexible, needs tuning",
+    "Prone to overfit with high degree",
+    "Good for wave shapes",
+    "Good for cumulative modeling"
+  )
+)
+
+
+gt_table <- model_comparison %>%
+  gt() %>%
+  tab_header(
+    title = "Comparison of Curve Fitting Models"
+  ) %>%
+  data_color(
+    columns = vars(`Overdispersion`),
+    colors = scales::col_factor(
+      palette = c("No" = "tomato", "Yes" = "lightgreen"),
+      domain = c("No", "Yes")
+    )
+  ) %>%
+  data_color(
+    columns = vars(Flexibility),
+    colors = scales::col_factor(
+      palette = c("Low" = "#f4cccc", "Moderate" = "#fce5cd", "High" = "#d9ead3", "Very High" = "#b6d7a8"),
+      domain = c("Low", "Moderate", "High", "Very High")
+    )
+  ) %>%
+  data_color(
+    columns = vars(`Overfitting Risk`),
+    colors = scales::col_factor(
+      palette = c("Low" = "#b6d7a8", "Medium" = "#ffe599", "High" = "#f4cccc"),
+      domain = c("Low", "Medium", "High")
+    )
+  )
+
+```
+
+## 4.1. Outbreak Year 2014
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show Code to obtain Week Index"
+
 wave1 <- wave1 %>%   
   arrange(week) %>%   
   mutate(week_index = row_number())
 ```
 
 ### 4.1.1. Model Comparison
-
-models
 
 ```{r}
 # Poisson model
@@ -1582,3 +1640,11 @@ ggplot(fit_metrics123, aes(x = Model, y = RMSE, fill = Wave)) +
 ```
 
 # 6. Shiny UI
+
+## 6.1. EDA
+
+![](images/clipboard-2000178618.png){width="651"}
+
+## 6.2. Time Series Curve Fitting
+
+![](images/clipboard-4047672289.png)
