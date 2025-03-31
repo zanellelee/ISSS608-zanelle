@@ -584,7 +584,7 @@ We also look at the residuals for the different models to check on the fitting o
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show Code for all models' residuals"
+#| code-summary: "Show Code for plotting all models' residuals"
 
 # Obtaining residuals
 wave1 <- wave1 %>%   mutate(
@@ -655,7 +655,12 @@ ggplot(rmse_summary1, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
 
 ### 4.1.2. Cumulative Model Comparison
 
+Cumulative Model Comparisons are also done for the same 7 models.
+
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models"
+
 # Preparation
 wave1 <- wave1 %>%
   mutate(
@@ -693,7 +698,12 @@ ggplot(wave1, aes(x = week_index)) +
 
 #### 4.1.2.1. Residuals
 
+Residuals of these models are also plotted.
+
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models' residuals"
+
 # Prepatation
 wave1 <- wave1 %>%
   mutate(
@@ -735,7 +745,12 @@ ggplot(resid_cum_long1, aes(x = week_index, y = cumulative_residual, color = mod
 
 #### 4.1.2.2. RMSE
 
+RMSE for these cumulative models are also calculated to compare them against actual values.
+
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for all Cumulative Models' RMSE values"
+
 # Preparation
 rmse_cum_poisson1 <- sqrt(mean(wave1$resid_cum_poisson^2))
 rmse_cum_nb1      <- sqrt(mean(wave1$resid_cum_nb^2))
@@ -764,13 +779,14 @@ ggplot(rmse_table1, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
   theme_minimal()
 ```
 
-### 4.1.3. Conclusion
+The same are also done for Outbreak Year 2015 and 2023.
 
 ## 4.2. Outbreak Year 2015
 
-week index
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for 2015 Outbreak week index"
+
 wave2 <- wave2 %>%   
   arrange(week) %>%   
   mutate(week_index = row_number())
@@ -778,9 +794,10 @@ wave2 <- wave2 %>%
 
 ### 4.2.1. Model Comparison
 
-poly
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for AIC values of Polynomial Model"
+
 degrees2 <- 1:20
 aic_values2 <- numeric(length(degrees2))
 models2 <- list()
@@ -797,9 +814,10 @@ aic_df2 <- data.frame(
 )
 ```
 
-models
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for fitting curves"
+
 poisson_model2 <- glm(cases ~ week_index, family = "poisson", data = wave2)
 nb_model2 <- glm.nb(cases ~ week_index, data = wave2)
 exp_model2 <- glm(log(cases + 1) ~ week_index, family = gaussian(), data = wave2)
@@ -809,9 +827,10 @@ lognormal_model2 <- glm(log(cases + 1) ~ week_index, family = gaussian(), data =
 gamma_model2 <- glm(cases ~ week_index, family = Gamma(link = "log"), data = wave2)
 ```
 
-fitting
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting models for 2015 Outbreak"
+
 # Preparation
 wave2 <- wave2 %>%
   mutate(
@@ -849,12 +868,18 @@ ggplot(wave2, aes(x = week_index)) +
 #### 4.2.1.1. AIC
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for AIC values"
+
 AIC(poisson_model2, nb_model2, exp_model2, poly_model2, gam_model2, lognormal_model2, gamma_model2)
 ```
 
 #### 4.2.1.2. Residuals
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting residuals"
+
 # Obtaining residuals
 wave2 <- wave2 %>%   mutate(
   resid_poisson = residuals(poisson_model2, type = "response"),     
@@ -896,6 +921,9 @@ ggplot(resid_long2, aes(x = week_index, y = residual, color = model)) +   geom_h
 #### 4.2.1.3. RMSE
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for RMSE values"
+
 rmse_summary2 <- wave2 %>%    
   summarise(          
     Poisson = sqrt(mean(resid_poisson^2)),          
@@ -920,6 +948,9 @@ ggplot(rmse_summary2, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
 ### 4.2.2. Cumulative Model Comparison
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models"
+
 # Preparation
 wave2 <- wave2 %>%
   mutate(
@@ -958,6 +989,9 @@ ggplot(wave2, aes(x = week_index)) +
 #### 4.2.2.1. Residuals
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models' residuals"
+
 # Prepatation
 wave2 <- wave2 %>%
   mutate(
@@ -1000,6 +1034,9 @@ ggplot(resid_cum_long2, aes(x = week_index, y = cumulative_residual, color = mod
 #### 4.2.2.2. RMSE
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for Cumulative Models' RMSE values"
+
 # Preparation
 rmse_cum_poisson2 <- sqrt(mean(wave2$resid_cum_poisson^2))
 rmse_cum_nb2      <- sqrt(mean(wave2$resid_cum_nb^2))
@@ -1028,23 +1065,23 @@ ggplot(rmse_table2, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
   theme_minimal()
 ```
 
-### 4.2.3. Conclusion
-
 ## 4.3. Outbreak Year 2023
 
 ### 4.3.1. Model Comparison
 
-week index
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for 2023 Outbreak week index"
+
 wave3 <- wave3 %>%   
   arrange(week) %>%   
   mutate(week_index = row_number())
 ```
 
-poly
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for AIC values of Polynomial Model"
+
 degrees3 <- 1:20
 aic_values3 <- numeric(length(degrees3))
 models3 <- list()
@@ -1061,9 +1098,10 @@ aic_df3 <- data.frame(
 )
 ```
 
-models
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for fitting curves"
+
 poisson_model3 <- glm(cases ~ week_index, family = "poisson", data = wave3)
 nb_model3 <- glm.nb(cases ~ week_index, data = wave3)
 exp_model3 <- glm(log(cases + 1) ~ week_index, family = gaussian(), data = wave3)
@@ -1073,9 +1111,10 @@ lognormal_model3 <- glm(log(cases + 1) ~ week_index, family = gaussian(), data =
 gamma_model3 <- glm(cases ~ week_index, family = Gamma(link = "log"), data = wave3)
 ```
 
-fitting
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting models for 2023 Outbreak"
+
 # Preparation
 wave3 <- wave3 %>%
   mutate(
@@ -1111,12 +1150,18 @@ ggplot(wave3, aes(x = week_index)) +
 #### 4.3.1.1. AIC
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for AIC values"
+
 AIC(poisson_model3, nb_model3, exp_model3, poly_model3, gam_model3, lognormal_model3, gamma_model3)
 ```
 
 #### 4.3.1.2. Residuals
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting residuals"
+
 # Obtaining residuals
 wave3 <- wave3 %>%   mutate(
   resid_poisson = residuals(poisson_model3, type = "response"),     
@@ -1158,6 +1203,9 @@ ggplot(resid_long3, aes(x = week_index, y = residual, color = model)) +   geom_h
 #### 4.3.1.3. RMSE
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting RMSE values"
+
 rmse_summary3 <- wave3 %>%    
   summarise(          
     Poisson = sqrt(mean(resid_poisson^2)),          
@@ -1182,6 +1230,9 @@ ggplot(rmse_summary3, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
 ### 4.3.2. Cumulative Model Comparison
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models"
+
 # Preparation
 wave3 <- wave3 %>%
   mutate(
@@ -1220,6 +1271,9 @@ ggplot(wave3, aes(x = week_index)) +
 #### 4.3.2.1. Residuals
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models' residuals"
+
 # Prepatation
 wave3 <- wave3 %>%
   mutate(
@@ -1262,6 +1316,9 @@ ggplot(resid_cum_long3, aes(x = week_index, y = cumulative_residual, color = mod
 #### 4.3.2.2. RMSE
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting Cumulative Models' RMSE values"
+
 # Preparation
 rmse_cum_poisson3 <- sqrt(mean(wave3$resid_cum_poisson^2))
 rmse_cum_nb3      <- sqrt(mean(wave3$resid_cum_nb^2))
@@ -1289,8 +1346,6 @@ ggplot(rmse_table3, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
   ) +
   theme_minimal()
 ```
-
-### 4.3.3. Conclusion
 
 # 5. Progress-based Curve fitting
 
