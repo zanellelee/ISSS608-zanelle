@@ -1349,9 +1349,14 @@ ggplot(rmse_table3, aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
 
 # 5. Progress-based Curve fitting
 
-progress
+To see how well a model trained with 1 outbreak period would perform on the other outbreak period, we load *progress* with the proportion of cases instead of a fixed count. This will allow us to better compare the graph shape of the outbreak period with another outbreak period.
+
+The models being compared in this segment will include GAM Model, Polynomial Model, Exponential Model, Negative Binomial Model and Poisson Model.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for obtaining Progress from 3 waves"
+
 # For Wave 1
 wave1 <- wave1 %>%
   arrange(week_index) %>%
@@ -1380,9 +1385,10 @@ wave3 <- wave3 %>%
 
 ## 5.1. Using 2014 Outbreak (Wave 1)
 
-fit 3 models
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for fitting models using Wave 1's data"
+
 
 # GAM model
 gam_progress1 <- gam(cases ~ s(progress), family = poisson(), data = wave1)
@@ -1400,9 +1406,12 @@ nb_progress1 <- glm.nb(cases ~ poly(progress, 4), data = wave1)
 poisson_progress1 <- glm(cases ~ poly(progress, 4), family = "poisson", data = wave1)
 ```
 
-predict 2 3
+We then attempt to predict the shape of Wave 2 and Wave 3 using the data from Wave 1.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for predicting Wave 2 and Wave 3"
+
 # Predict using Wave 1 models on Wave 2
 wave2 <- wave2 %>%
   mutate(
@@ -1425,9 +1434,12 @@ wave3 <- wave3 %>%
 
 ```
 
-plot
+The predicted values are then plotted in the same plot as the actual values for visual comparison.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting predicted and actual values of Wave 2 and Wave 3"
+
 # Combine and label
 wave1$wave <- "Wave 1"
 wave2$wave <- "Wave 2"
@@ -1454,11 +1466,14 @@ ggplot(predicted_progress1, aes(x = progress)) +
 
 ```
 
+These steps are then repeated for the next two outbreak waves as well.
+
 ## 5.2. Using 2015 Outbreak (Wave 2)
 
-fit wave 2
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for fitting models using Wave 2's data"
+
 # GAM model
 gam_progress2 <- gam(cases ~ s(progress), family = poisson(), data = wave2)
 
@@ -1475,9 +1490,10 @@ nb_progress2 <- glm.nb(cases ~ poly(progress, 4), data = wave2)
 poisson_progress2 <- glm(cases ~ poly(progress, 4), family = "poisson", data = wave2)
 ```
 
-predict
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for predicting Wave 1 and Wave 3"
+
 # Predict on Wave 1
 wave1 <- wave1 %>%
   mutate(
@@ -1499,9 +1515,10 @@ wave3 <- wave3 %>%
 
 ```
 
-plot
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for plotting predicted and actual values of Wave 1 and Wave 3"
+
 # Combine for plotting
 wave1$wave <- "Wave 1"
 wave2$wave <- "Wave 2"
@@ -1531,9 +1548,9 @@ ggplot(predicted_progress2, aes(x = progress)) +
 
 ## 5.3. Using 2023 Outbreak (Wave 3)
 
-model
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for fitting models using Wave 3's data"
 
 # GAM
 gam_progress3 <- gam(cases ~ s(progress), family = poisson(), data = wave3)
@@ -1551,9 +1568,10 @@ nb_progress3 <- glm.nb(cases ~ poly(progress, 4), data = wave3)
 poisson_progress3 <- glm(cases ~ poly(progress, 4), family = "poisson", data = wave3)
 ```
 
-predict
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for predicting Wave 1 and Wave 2"
+
 wave1 <- wave1 %>%
   mutate(
     pred_gam3      = predict(gam_progress3, newdata = wave1, type = "response"),
@@ -1574,10 +1592,10 @@ wave2 <- wave2 %>%
 
 ```
 
-plot
-
 ```{r}
-# Label and combine
+#| code-fold: true
+#| code-summary: "Show Code for plotting predicted and actual values of Wave 1 and Wave 2"
+
 wave1$wave <- "Wave 1"
 wave2$wave <- "Wave 2"
 wave3$wave <- "Wave 3"
@@ -1605,16 +1623,26 @@ ggplot(predicted_progress3, aes(x = progress)) +
 
 ## 5.4. Cumulative Model Comparison using RMSE
 
+A function of RMSE is created to reduce the troublesome steps of obtaining the RMSE values.
+
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for RMSE function"
+
 rmse <- function(actual, predicted) {
   sqrt(mean((actual - predicted)^2, na.rm = TRUE))}
 ```
 
 ### 5.4.1. Predicting 2014 Outbreak
 
-plotting tgt
+We then compare the RMSE of the predicted values against the actual values when the models are trained using the different waves. For example, we look at Wave 2's and Wave 3's predicted values against Wave 1's actual values and see which model is better at predicting these values.
+
+The same is repeated for the other outbreak periods.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for predicting the 2014 Outbreak"
+
 fit_metrics231 <- tibble(
   Model = rep(c("GAM", "Polynomial", "Exponential", "Negative\nBinomial", "Poisson"), times = 2),
   RMSE = c(
@@ -1650,9 +1678,10 @@ ggplot(fit_metrics231, aes(x = Model, y = RMSE, fill = Wave)) +
 
 ### 5.4.2. Predicting 2015 Outbreak
 
-plotting tgt
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for predicting the 2015 Outbreak"
+
 fit_metrics132 <- tibble(
   Model = rep(c("GAM", "Polynomial", "Exponential", "Negative\nBinomial", "Poisson"), times = 2),
   RMSE = c(
@@ -1688,9 +1717,10 @@ ggplot(fit_metrics132, aes(x = Model, y = RMSE, fill = Wave)) +
 
 ### 5.4.3. Predicting 2023 Outbreak
 
-plotting tgt
-
 ```{r}
+#| code-fold: true
+#| code-summary: "Show Code for predicting the 2023 Outbreak"
+
 fit_metrics123 <- tibble(
   Model = rep(c("GAM", "Polynomial", "Exponential", "Negative\nBinomial", "Poisson"), times = 2),
   RMSE = c(
